@@ -6,1039 +6,1414 @@
     <title>Club 16 | Meta Ad Strategy</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg: #0a0a0a;
-            --surface: #141414;
-            --surface-2: #1a1a1a;
-            --border: #2a2a2a;
-            --text: #f5f5f5;
-            --text-muted: #888;
-            --accent: #00c853;
-            --accent-dim: rgba(0, 200, 83, 0.12);
-            --red: #ff3d3d;
-            --orange: #ff9100;
-            --blue: #448aff;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow: hidden;
-            height: 100vh;
-        }
-
-        .slide-container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px 80px;
-            opacity: 0;
-            transform: translateX(40px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
-
-        .slide.active {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        .slide.exit {
-            opacity: 0;
-            transform: translateX(-40px);
-        }
-
-        /* Typography */
-        .slide-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 16px;
-        }
-
-        h1 {
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1.5px;
-        }
-
-        h2 {
-            font-size: 38px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
-        }
-
-        h3 {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            max-width: 700px;
-        }
-
-        .highlight { color: var(--accent); }
-        .highlight-red { color: var(--red); }
-        .highlight-orange { color: var(--orange); }
-        .highlight-blue { color: var(--blue); }
-
-        /* Cards */
-        .card-grid {
-            display: grid;
-            gap: 16px;
-            margin-top: 24px;
-        }
-
-        .grid-2 { grid-template-columns: 1fr 1fr; }
-        .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-        .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-        }
-
-        .card-accent {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-        }
-
-        .card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .card p, .card li {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        .card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .card ul li {
-            padding: 4px 0;
-            padding-left: 16px;
-            position: relative;
-        }
-
-        .card ul li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 12px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--accent);
-        }
-
-        /* Big stat */
-        .stat {
-            font-size: 64px;
-            font-weight: 900;
-            color: var(--accent);
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        .stat-row {
-            display: flex;
-            gap: 60px;
-            margin-top: 32px;
-        }
-
-        /* Table */
-        .table-wrap {
-            margin-top: 20px;
-            overflow: hidden;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        th {
-            background: var(--surface-2);
-            text-align: left;
-            padding: 14px 20px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        td:first-child { color: var(--text); font-weight: 500; }
-
-        /* Funnel */
-        .funnel-step {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 0;
-        }
-
-        .funnel-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .funnel-text {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .funnel-text span {
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 14px;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .arrow-down {
-            width: 36px;
-            display: flex;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 18px;
-        }
-
-        /* List items */
-        .check-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 16px;
-        }
-
-        .check-list li {
-            padding: 10px 0;
-            font-size: 18px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            line-height: 1.4;
-        }
-
-        .check-list li::before {
-            content: '\2713';
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 16px;
-            margin-top: 2px;
-        }
-
-        .x-list li::before {
-            content: '\2717';
-            color: var(--red);
-        }
-
-        /* Progress bar */
-        .progress-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background: var(--accent);
-            transition: width 0.4s ease;
-            z-index: 100;
-        }
-
-        /* Navigation */
-        .nav {
-            position: fixed;
-            bottom: 24px;
-            right: 40px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover {
-            border-color: var(--accent);
-            background: var(--accent-dim);
-        }
-
-        .slide-count {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* Logo */
-        .logo {
-            position: fixed;
-            top: 30px;
-            left: 40px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            z-index: 100;
-        }
-
-        .crafted-mark {
-            position: fixed;
-            bottom: 28px;
-            left: 40px;
-            font-size: 10px;
-            color: #444;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            z-index: 100;
-        }
-
-        /* Two column layout */
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 24px;
-        }
-
-        /* Badge */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .badge-green { background: rgba(0,200,83,0.15); color: var(--accent); }
-        .badge-red { background: rgba(255,61,61,0.15); color: var(--red); }
-        .badge-orange { background: rgba(255,145,0,0.15); color: var(--orange); }
-        .badge-blue { background: rgba(68,138,255,0.15); color: var(--blue); }
-
-        /* Percentage bar */
-        .pct-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            margin-top: 8px;
-            overflow: hidden;
-        }
-
-        .pct-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: var(--accent);
-        }
-
-        .small-text {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-top: 8px;
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0a;--surface:#141414;--surface-2:#1a1a1a;--border:#2a2a2a;--text:#f5f5f5;--text-muted:#888;--accent:#00c853;--accent-dim:rgba(0,200,83,0.12);--red:#ff3d3d;--orange:#ff9100;--blue:#448aff;--purple:#b388ff}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh}
+        .slide-container{width:100vw;height:100vh;position:relative;overflow:hidden}
+        .slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;padding:60px 80px;opacity:0;transform:translateX(40px);transition:all 0.5s cubic-bezier(0.4,0,0.2,1);pointer-events:none;overflow-y:auto}
+        .slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
+        .slide.exit{opacity:0;transform:translateX(-40px)}
+        .slide-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+        h1{font-size:48px;font-weight:800;line-height:1.1;margin-bottom:20px;letter-spacing:-1.5px}
+        h2{font-size:36px;font-weight:700;line-height:1.2;margin-bottom:20px;letter-spacing:-1px}
+        h3{font-size:20px;font-weight:600;margin-bottom:12px}
+        .subtitle{font-size:18px;color:var(--text-muted);line-height:1.5;max-width:700px}
+        .highlight{color:var(--accent)}.highlight-red{color:var(--red)}.highlight-orange{color:var(--orange)}.highlight-blue{color:var(--blue)}
+        .card-grid{display:grid;gap:14px;margin-top:20px}
+        .grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr 1fr}.grid-4{grid-template-columns:1fr 1fr 1fr 1fr}.grid-5{grid-template-columns:1fr 1fr 1fr 1fr 1fr}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+        .card-accent{border-color:var(--accent);background:var(--accent-dim)}
+        .card h3{font-size:15px;font-weight:700;margin-bottom:6px}
+        .card p,.card li{font-size:13px;color:var(--text-muted);line-height:1.5}
+        .card ul{list-style:none;padding:0}.card ul li{padding:3px 0;padding-left:14px;position:relative}
+        .card ul li::before{content:'';position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+        .stat{font-size:56px;font-weight:900;color:var(--accent);letter-spacing:-2px;line-height:1}
+        .stat-label{font-size:13px;color:var(--text-muted);margin-top:4px;font-weight:500}
+        .stat-row{display:flex;gap:50px;margin-top:28px}
+        .table-wrap{margin-top:16px;overflow:hidden;border-radius:12px;border:1px solid var(--border)}
+        table{width:100%;border-collapse:collapse;font-size:13px}
+        th{background:var(--surface-2);text-align:left;padding:12px 16px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);border-bottom:1px solid var(--border)}
+        td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-muted)}
+        tr:last-child td{border-bottom:none}td:first-child{color:var(--text);font-weight:500}
+        .funnel-step{display:flex;align-items:center;gap:14px;padding:10px 0}
+        .funnel-num{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+        .funnel-text{font-size:15px;font-weight:500}.funnel-text span{color:var(--text-muted);font-weight:400;font-size:13px;display:block;margin-top:2px}
+        .arrow-down{width:32px;display:flex;justify-content:center;color:var(--accent);font-size:14px;padding:2px 0}
+        .check-list{list-style:none;padding:0;margin-top:12px}
+        .check-list li{padding:8px 0;font-size:16px;display:flex;align-items:flex-start;gap:10px;line-height:1.4}
+        .check-list li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:14px;margin-top:2px}
+        .x-list li::before{content:'\2717';color:var(--red)}
+        .progress-bar{position:fixed;bottom:0;left:0;height:3px;background:var(--accent);transition:width 0.4s ease;z-index:100}
+        .nav{position:fixed;bottom:20px;right:36px;display:flex;align-items:center;gap:12px;z-index:100}
+        .nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+        .nav-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+        .slide-count{font-size:11px;color:var(--text-muted);font-weight:500;font-variant-numeric:tabular-nums}
+        .logo{position:fixed;top:24px;left:36px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);z-index:100}
+        .crafted-mark{position:fixed;bottom:24px;left:36px;font-size:9px;color:#444;letter-spacing:2px;text-transform:uppercase;z-index:100}
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:20px}
+        .badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+        .badge-green{background:rgba(0,200,83,0.15);color:var(--accent)}.badge-red{background:rgba(255,61,61,0.15);color:var(--red)}.badge-orange{background:rgba(255,145,0,0.15);color:var(--orange)}.badge-blue{background:rgba(68,138,255,0.15);color:var(--blue)}.badge-purple{background:rgba(179,136,255,0.15);color:var(--purple)}
+        .pct-bar{height:6px;background:var(--border);border-radius:3px;margin-top:6px;overflow:hidden}
+        .pct-fill{height:100%;border-radius:3px;background:var(--accent)}
+        .small-text{font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:6px}
+        .num-item{display:flex;gap:16px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+        .num-item:last-child{border-bottom:none}
+        .num-circle{font-size:22px;font-weight:900;color:var(--accent);width:36px;flex-shrink:0}
+        .num-content h3{margin:0;font-size:17px}.num-content p{color:var(--text-muted);font-size:13px;margin-top:3px}
+        .quote{border-left:3px solid var(--accent);padding:12px 20px;margin:16px 0;font-style:italic;color:var(--text-muted);font-size:15px;line-height:1.5}
+        .section-divider{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .section-divider .section-num{font-size:80px;font-weight:900;color:var(--accent);opacity:0.3;line-height:1}
+        .tag{display:inline-block;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin:4px}
+        .tag-green{background:var(--accent-dim);color:var(--accent)}.tag-blue{background:rgba(68,138,255,0.12);color:var(--blue)}.tag-orange{background:rgba(255,145,0,0.12);color:var(--orange)}
     </style>
 </head>
 <body>
-    <div class="logo">Club 16 | Ad Strategy</div>
-    <div class="crafted-mark">Crafted Marketing</div>
-    <div class="progress-bar" id="progress"></div>
+<div class="logo">Club 16 | Ad Strategy Session 2</div>
+<div class="crafted-mark">Crafted Marketing</div>
+<div class="progress-bar" id="progress"></div>
 
-    <div class="slide-container" id="slides">
+<div class="slide-container" id="slides">
 
-        <!-- SLIDE 1: Title -->
-        <div class="slide active" data-slide="0">
-            <div class="slide-label">Crafted Marketing | March 2026</div>
-            <h1>Club 16 <span class="highlight">Meta Ad Strategy</span></h1>
-            <p class="subtitle">A complete paid advertising framework for driving trial signups and memberships across 17 Lower Mainland locations.</p>
-            <div class="stat-row">
-                <div>
-                    <div class="stat">17</div>
-                    <div class="stat-label">Locations</div>
-                </div>
-                <div>
-                    <div class="stat">$4</div>
-                    <div class="stat-label">Per Week</div>
-                </div>
-                <div>
-                    <div class="stat">26</div>
-                    <div class="stat-label">Days Left on $10/mo Promo</div>
-                </div>
+<!-- S1: TITLE -->
+<div class="slide active">
+    <div class="slide-label">Crafted Marketing | March 5, 2026</div>
+    <h1>Club 16 <span class="highlight">Ad Strategy</span></h1>
+    <p class="subtitle">Session 2: From Training to Execution. Your complete advertising strategy for driving trial signups and memberships across all locations.</p>
+    <div class="stat-row">
+        <div><div class="stat">17</div><div class="stat-label">Locations</div></div>
+        <div><div class="stat">$4</div><div class="stat-label">Per Week</div></div>
+        <div><div class="stat">26</div><div class="stat-label">Days Left on $10/mo Promo</div></div>
+    </div>
+</div>
+
+<!-- S2: RECAP -->
+<div class="slide">
+    <div class="slide-label">Recap</div>
+    <h2>What we covered last week</h2>
+    <div class="card-grid grid-3">
+        <div class="card"><h3>Foundations</h3><p>Business Manager, ad accounts, pixel setup, CAPI, dashboard columns, campaign hierarchy, AI settings, ABO vs CBO</p></div>
+        <div class="card"><h3>Targeting & Budget</h3><p>Geo-targeting by location, 5 location clusters, warm vs cold audiences, audience stacking, exclusions, starting budget, scale path</p></div>
+        <div class="card"><h3>Andromeda & Personas</h3><p>Creative diversity over audience targeting, 3 diversity dimensions, 5 personas, Andromeda compliance check</p></div>
+        <div class="card"><h3>Creative Production</h3><p>Video ad structure, 10 scroll-stopping rules, 7 body frameworks, static ad types, filming guide, stalker hooks</p></div>
+        <div class="card"><h3>Leads & Testing</h3><p>Lead form setup, 5-minute rule, testing mindset, traffic light framework, kill/keep/scale decisions</p></div>
+        <div class="card"><h3>What's Next</h3><p>Scaling rules, content remarketing, trust assets, seasonal calendar, action plan, toolkit overview</p></div>
+    </div>
+    <p class="small-text" style="margin-top:16px;">Today we move from <strong style="color:var(--text)">how ads work</strong> to <strong style="color:var(--accent)">your specific strategy</strong>.</p>
+</div>
+
+<!-- S3: TODAY'S AGENDA -->
+<div class="slide">
+    <div class="slide-label">Today's Session</div>
+    <h2>What we're covering today</h2>
+    <div style="margin-top:20px;">
+        <div class="num-item"><div class="num-circle">01</div><div class="num-content"><h3>Your Competitive Advantage</h3><p>Why Club 16 is positioned to dominate paid advertising in BC</p></div></div>
+        <div class="num-item"><div class="num-circle">02</div><div class="num-content"><h3>Current State Audit</h3><p>What's working, what's not, and where the gaps are</p></div></div>
+        <div class="num-item"><div class="num-circle">03</div><div class="num-content"><h3>Campaign Architecture</h3><p>3 campaigns: Prospecting, Retargeting, Geo-Conquest</p></div></div>
+        <div class="num-item"><div class="num-circle">04</div><div class="num-content"><h3>Offer Ladder & Funnels</h3><p>What to promote to whom and how to convert them</p></div></div>
+        <div class="num-item"><div class="num-circle">05</div><div class="num-content"><h3>Creative Strategy</h3><p>6 ad concepts, 5 hooks, production plan</p></div></div>
+        <div class="num-item"><div class="num-circle">06</div><div class="num-content"><h3>Budget, KPIs & Location Rollout</h3><p>Numbers, targets, scaling, and the 30-60-90 day roadmap</p></div></div>
+    </div>
+</div>
+
+<!-- S4: SECTION DIVIDER - COMPETITIVE ADVANTAGE -->
+<div class="slide section-divider">
+    <div class="section-num">01</div>
+    <div class="slide-label" style="margin-top:12px;">Section One</div>
+    <h1>Your Competitive<br><span class="highlight">Advantage</span></h1>
+    <p class="subtitle" style="margin-top:12px;">Why Club 16 is positioned to win on paid advertising in British Columbia.</p>
+</div>
+
+<!-- S5: THE PRICING WEAPON -->
+<div class="slide">
+    <div class="slide-label">Competitive Advantage</div>
+    <h2>$4/week is a weapon, not just a price</h2>
+    <div class="two-col">
+        <div>
+            <div class="quote">"The #1 objection to gym memberships is cost. At $4/week, that objection doesn't exist. Your ad copy doesn't need to convince people the price is worth it. It just needs to make them aware the price exists."</div>
+            <ul class="check-list" style="margin-top:20px;">
+                <li>Lower than a single coffee per day</li>
+                <li>Less than Netflix, Spotify, or any streaming service</li>
+                <li>1/6th the cost of Anytime Fitness</li>
+                <li>1/10th the cost of GoodLife at some tiers</li>
+                <li>No contract means zero risk to try</li>
+            </ul>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card card-accent" style="text-align:center;"><div class="stat" style="font-size:48px;">$4/wk</div><div class="stat-label">Club 16</div></div>
+            <div class="card" style="text-align:center;"><div class="stat" style="font-size:48px;color:var(--red);">$25-60/mo</div><div class="stat-label">Anytime Fitness</div></div>
+            <div class="card" style="text-align:center;"><div class="stat" style="font-size:48px;color:var(--red);">$25-60/mo</div><div class="stat-label">Fitness World / Steve Nash</div></div>
+            <div class="card" style="text-align:center;"><div class="stat" style="font-size:48px;color:var(--red);">$40-80/mo</div><div class="stat-label">GoodLife Fitness</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- S6: COMPETITOR BREAKDOWN -->
+<div class="slide">
+    <div class="slide-label">Competitive Advantage</div>
+    <h2>Your competitors' weaknesses</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Competitor</th><th>Price</th><th>Locations (BC)</th><th>Their Weakness</th><th>Your Counter</th></tr></thead>
+            <tbody>
+                <tr><td>Anytime Fitness</td><td>$25-60/mo</td><td>Multiple</td><td>6x more expensive. Franchise inconsistency. No local identity.</td><td>Same equipment, fraction of the price. Trevor Linden brand.</td></tr>
+                <tr><td>Fitness World / Steve Nash</td><td>$25-60/mo</td><td>23+</td><td>Hidden annual fees. Premium positioning alienates budget shoppers.</td><td>No hidden fees. No contract. Cancel anytime.</td></tr>
+                <tr><td>GoodLife Fitness</td><td>$40-80/mo</td><td>3</td><td>Barely present in BC. Corporate feel. No community.</td><td>17 locations. Local roots. Community-first culture.</td></tr>
+                <tr><td>Community Centres</td><td>$50+/mo</td><td>Many</td><td>Outdated equipment. Limited hours. No personal training.</td><td>Modern equipment. Group classes. Recovery centre. PT available.</td></tr>
+                <tr><td>Fit4Less</td><td>$5-9/mo</td><td>Limited</td><td>Bare bones. No classes. No amenities. No community.</td><td>Match their price AND offer group fitness, recovery, PT, She's FIT.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- S7: 6 UNFAIR ADVANTAGES -->
+<div class="slide">
+    <div class="slide-label">Competitive Advantage</div>
+    <h2>6 assets no competitor can match</h2>
+    <div class="card-grid grid-3">
+        <div class="card card-accent"><h3 style="font-size:36px;margin-bottom:2px;">$4</h3><p><strong style="color:var(--text)">Lowest Price in Market</strong></p><p>The math sells itself. Every ad just needs to make the price visible.</p></div>
+        <div class="card"><h3 style="font-size:18px;margin-bottom:2px;">Trevor Linden</h3><p><strong style="color:var(--text)">Local Hero Brand</strong></p><p>19-year NHL veteran. BC icon. Instant trust and credibility no competitor can replicate.</p></div>
+        <div class="card"><h3 style="font-size:36px;margin-bottom:2px;">0</h3><p><strong style="color:var(--text)">Contracts Required</strong></p><p>Cancel anytime. Removes the #1 barrier to gym signups. "What's the worst that can happen?"</p></div>
+        <div class="card"><h3 style="font-size:18px;margin-bottom:2px;">She's FIT</h3><p><strong style="color:var(--text)">Women-Only Sub-Brand</strong></p><p>6 dedicated locations. No competitor in BC offers women-only fitness at this price point.</p></div>
+        <div class="card"><h3 style="font-size:36px;margin-bottom:2px;">17</h3><p><strong style="color:var(--text)">Locations</strong></p><p>"There's one near you." 17 unique filming environments for Andromeda creative diversity.</p></div>
+        <div class="card"><h3 style="font-size:18px;margin-bottom:2px;">Premium Equipment</h3><p><strong style="color:var(--text)">At Budget Prices</strong></p><p>State-of-the-art gear. Group classes. Recovery centre. PT. The surprise factor in every tour video.</p></div>
+    </div>
+</div>
+
+<!-- S8: THE $10/MO URGENCY -->
+<div class="slide">
+    <div class="slide-label">Competitive Advantage</div>
+    <h2>The $10/month promo is a time bomb</h2>
+    <div class="two-col">
+        <div>
+            <div class="stat" style="font-size:72px;">26</div>
+            <div class="stat-label" style="font-size:16px;">Days until March 31 expiry</div>
+            <div class="quote" style="margin-top:24px;">"Limited-time offers create urgency that 'always available' pricing can't. The March 31 deadline gives every ad a built-in reason to act NOW."</div>
+            <p style="margin-top:16px;font-size:14px;color:var(--text-muted);">This promo should be the centerpiece of all retargeting ads for the next 26 days. Countdown timers. Deadline copy. "Last chance" messaging.</p>
+        </div>
+        <div>
+            <div class="card card-accent" style="margin-bottom:12px;text-align:center;padding:28px;">
+                <div style="font-size:48px;font-weight:900;color:var(--accent);">$10/mo</div>
+                <div style="font-size:14px;color:var(--text-muted);margin-top:8px;">Current promotional rate</div>
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Use in retargeting only</h3>
+                <p>Don't lead with this on cold traffic. Lead with the free pass. Save the $10/month for people who already know you.</p>
+            </div>
+            <div class="card">
+                <h3>Countdown creative</h3>
+                <p>Update the static image weekly: "21 days left" then "14 days" then "7 days" then "LAST 3 DAYS." Increasing urgency.</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- SLIDE 2: The Opportunity -->
-        <div class="slide" data-slide="1">
-            <div class="slide-label">The Opportunity</div>
-            <h2>You have the biggest pricing advantage in BC fitness</h2>
-            <div class="card-grid grid-4" style="margin-top: 32px;">
-                <div class="card card-accent" style="text-align:center;">
-                    <div class="stat" style="font-size:42px;">$4/wk</div>
-                    <div class="stat-label">Club 16</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div class="stat" style="font-size:42px; color:var(--red);">$25-60</div>
-                    <div class="stat-label">Anytime Fitness /mo</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div class="stat" style="font-size:42px; color:var(--red);">$25-60</div>
-                    <div class="stat-label">Fitness World /mo</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div class="stat" style="font-size:42px; color:var(--red);">$40-80</div>
-                    <div class="stat-label">GoodLife /mo</div>
-                </div>
-            </div>
-            <p class="small-text" style="margin-top:24px; font-size:16px;">Club 16 is <strong style="color:var(--accent)">6-10x cheaper</strong> than every competitor. The ad strategy is simple: make that price impossible to ignore.</p>
+<!-- S9: SECTION DIVIDER - CURRENT STATE -->
+<div class="slide section-divider">
+    <div class="section-num">02</div>
+    <div class="slide-label" style="margin-top:12px;">Section Two</div>
+    <h1>Current State<br><span class="highlight">Audit</span></h1>
+    <p class="subtitle" style="margin-top:12px;">What's working today and what needs to change before we launch ads.</p>
+</div>
+
+<!-- S10: WHAT'S WORKING -->
+<div class="slide">
+    <div class="slide-label">Current State</div>
+    <h2>What's working today</h2>
+    <ul class="check-list">
+        <li><strong>Price is the lowest in BC.</strong> $4/week. No close competitor. This is your #1 ad message.</li>
+        <li><strong>Trevor Linden brand recognition.</strong> Instant credibility with BC residents. Use him in creative.</li>
+        <li><strong>17 locations across the Lower Mainland.</strong> Broad geo coverage. Convenience argument is strong.</li>
+        <li><strong>She's FIT sub-brand.</strong> 6 women-only locations. Untapped ad angle. No competitor has this.</li>
+        <li><strong>No-contract model.</strong> "Cancel anytime" removes the #1 objection to gym signups.</li>
+        <li><strong>3-day free pass exists.</strong> Great lead magnet already on the website. Zero-commitment trial.</li>
+        <li><strong>Active Instagram.</strong> 14K followers. ~1,700 posts. Consistent content output.</li>
+        <li><strong>$10/month promo running.</strong> Time-limited offer with built-in urgency (March 31).</li>
+    </ul>
+</div>
+
+<!-- S11: WHAT NEEDS WORK -->
+<div class="slide">
+    <div class="slide-label">Current State</div>
+    <h2>What needs to change</h2>
+    <ul class="check-list x-list">
+        <li><strong>Ad traffic going to homepage.</strong> Too many options, too many clicks. Conversion will be low. Need dedicated landing pages per offer.</li>
+        <li><strong>3-day free pass is buried.</strong> It's on the site but not prominent. Should be the #1 offer for cold traffic ads.</li>
+        <li><strong>Tracking infrastructure unverified.</strong> Meta Pixel + Conversions API must be confirmed. Without this, Meta can't optimize delivery.</li>
+        <li><strong>No retargeting audiences built.</strong> Website visitors, video viewers, social engagers are being lost. This is the highest-ROI traffic.</li>
+        <li><strong>Creative variety is limited.</strong> Need UGC-style content: member testimonials, facility tours, price reaction Reels. Polished corporate content underperforms.</li>
+        <li><strong>No location-specific targeting.</strong> Each gym should have its own geo-targeted ad set within location clusters.</li>
+        <li><strong>No post-signup nurture.</strong> Members sign up and then nothing. Need email/SMS sequence to drive first visit and retention.</li>
+    </ul>
+</div>
+
+<!-- S12: TECHNICAL PREREQUISITES -->
+<div class="slide">
+    <div class="slide-label">Current State</div>
+    <h2>Technical prerequisites before launch</h2>
+    <div class="card-grid grid-2">
+        <div class="card card-accent">
+            <h3>Meta Pixel</h3>
+            <p>Must be installed on trevorlindenfitness.com and firing correctly on all pages. Check via Events Manager > Test Events. If not installed, NOTHING works.</p>
+            <p style="margin-top:8px;"><strong style="color:var(--accent)">Ask your agency:</strong> "Is our pixel installed? Show me the Events Manager."</p>
         </div>
+        <div class="card card-accent">
+            <h3>Conversions API (CAPI)</h3>
+            <p>Server-side tracking that works alongside the pixel. Harder for ad blockers to block. Dramatically improves data quality and optimization.</p>
+            <p style="margin-top:8px;"><strong style="color:var(--accent)">Ask your agency:</strong> "Is CAPI configured? Are we getting server events?"</p>
+        </div>
+        <div class="card">
+            <h3>Standard Events to Track</h3>
+            <ul>
+                <li>PageView (all pages)</li>
+                <li>Lead (free pass form submission)</li>
+                <li>CompleteRegistration (membership signup)</li>
+                <li>ViewContent (pricing/membership pages)</li>
+                <li>InitiateCheckout (started signup but didn't finish)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Audience Sources to Build</h3>
+            <ul>
+                <li>Website Custom Audience: All visitors (180 days)</li>
+                <li>Website Custom Audience: Pricing page visitors (90 days)</li>
+                <li>Video viewers: 50%+ watched (365 days)</li>
+                <li>IG engagers: All interactions (365 days)</li>
+                <li>FB page engagers: All interactions (365 days)</li>
+                <li>Lead form openers (180 days)</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-        <!-- SLIDE 3: What's Working -->
-        <div class="slide" data-slide="2">
-            <div class="slide-label">Current State</div>
-            <h2>What's working today</h2>
+<!-- S13: DIGITAL PRESENCE AUDIT -->
+<div class="slide">
+    <div class="slide-label">Current State</div>
+    <h2>Digital presence audit</h2>
+    <div class="card-grid grid-2">
+        <div class="card">
+            <h3>Website: trevorlindenfitness.com</h3>
+            <ul>
+                <li>"Join Now" CTAs present throughout</li>
+                <li>3-day free pass available but not prominently featured</li>
+                <li>$10/month promo on homepage</li>
+                <li>Location pages for all 17 gyms</li>
+                <li>She's FIT has its own section</li>
+                <li>Mobile experience needs to be tested</li>
+            </ul>
+            <p style="margin-top:8px;"><span class="badge badge-orange">Gap</span> No dedicated ad landing pages</p>
+        </div>
+        <div class="card">
+            <h3>Instagram: @trevorlindenfitness</h3>
+            <ul>
+                <li>14K followers (solid base)</li>
+                <li>~1,700 posts (consistent output)</li>
+                <li>751 following</li>
+                <li>Mix of facility, class, and promotional content</li>
+            </ul>
+            <p style="margin-top:8px;"><span class="badge badge-green">Strength</span> Content engine already running</p>
+        </div>
+        <div class="card">
+            <h3>Offers Currently Available</h3>
+            <ul>
+                <li>$4/week baseline membership</li>
+                <li>$10/month promotional rate (ends 3/31)</li>
+                <li>3-day free guest pass</li>
+                <li>$20 drop-in day pass</li>
+                <li>Corporate membership discounts</li>
+                <li>Free fitness assessment</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Gaps to Fill</h3>
+            <ul>
+                <li>Dedicated landing pages per offer</li>
+                <li>Retargeting pixel audiences</li>
+                <li>UGC content library</li>
+                <li>Post-signup email nurture</li>
+                <li>Location-specific creative</li>
+                <li>Lead form templates in Ads Manager</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- S14: SECTION DIVIDER - CAMPAIGNS -->
+<div class="slide section-divider">
+    <div class="section-num">03</div>
+    <div class="slide-label" style="margin-top:12px;">Section Three</div>
+    <h1>Campaign<br><span class="highlight">Architecture</span></h1>
+    <p class="subtitle" style="margin-top:12px;">Three campaigns. Simple structure. Let Meta's AI do the optimization.</p>
+</div>
+
+<!-- S15: 3 CAMPAIGN OVERVIEW -->
+<div class="slide">
+    <div class="slide-label">Campaign Architecture</div>
+    <h2>Three campaigns, one goal: members through the door</h2>
+    <div class="card-grid grid-3" style="margin-top:24px;">
+        <div class="card card-accent">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="margin:0;font-size:20px;">Prospecting</h3><span class="badge badge-green">60%</span></div>
+            <p style="font-size:15px;color:var(--text);margin-bottom:8px;">New leads who've never heard of Club 16</p>
+            <p><strong>Audience:</strong> Broad local, 5-15km radius</p>
+            <p><strong>Offer:</strong> 3-day free guest pass</p>
+            <p><strong>Creative:</strong> UGC, facility tours, price shock</p>
+            <p><strong>Optimization:</strong> Leads</p>
+        </div>
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="margin:0;font-size:20px;">Retargeting</h3><span class="badge badge-blue">25%</span></div>
+            <p style="font-size:15px;color:var(--text);margin-bottom:8px;">Convert people who already know Club 16</p>
+            <p><strong>Audience:</strong> Site visitors, video viewers, engagers</p>
+            <p><strong>Offer:</strong> $10/mo promo (March 31 deadline)</p>
+            <p><strong>Creative:</strong> Urgency, testimonials, countdown</p>
+            <p><strong>Optimization:</strong> Conversions</p>
+        </div>
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="margin:0;font-size:20px;">Geo-Conquest</h3><span class="badge badge-orange">15%</span></div>
+            <p style="font-size:15px;color:var(--text);margin-bottom:8px;">Steal members from competitors</p>
+            <p><strong>Audience:</strong> Near Anytime, Fitness World, GoodLife</p>
+            <p><strong>Offer:</strong> "$4/week vs what you pay now"</p>
+            <p><strong>Creative:</strong> Price comparison, switch & save</p>
+            <p><strong>Optimization:</strong> Leads</p>
+        </div>
+    </div>
+</div>
+
+<!-- S16: PROSPECTING DEEP DIVE -->
+<div class="slide">
+    <div class="slide-label">Campaign 1: Prospecting</div>
+    <h2>Prospecting: The top of the funnel</h2>
+    <div class="two-col">
+        <div>
+            <h3 style="color:var(--accent);">Audience Setup</h3>
             <ul class="check-list">
-                <li><strong>Price is unbeatable.</strong> $4/week baseline. No competitor touches this.</li>
-                <li><strong>Trevor Linden brand.</strong> Instant credibility with BC locals.</li>
-                <li><strong>17 locations.</strong> Covers the entire Lower Mainland.</li>
-                <li><strong>She's FIT sub-brand.</strong> 6 women-only locations. No competitor has this.</li>
-                <li><strong>No contracts.</strong> Cancel anytime. Removes the #1 objection.</li>
-                <li><strong>3-day free pass.</strong> Exists on the site. Great lead magnet.</li>
-                <li><strong>Instagram:</strong> 14K followers, ~1,700 posts. Consistent output.</li>
+                <li>Broad local targeting: 5-15km per location cluster</li>
+                <li>Ages 18-65+ (don't restrict too much)</li>
+                <li>No interest stacking initially (let Andromeda work)</li>
+                <li>Exclude current member list</li>
+                <li>Exclude lead form submitters (last 30 days)</li>
+                <li>Exclude warm audiences (no overlap)</li>
             </ul>
+            <h3 style="color:var(--accent);margin-top:20px;">Why Broad Works</h3>
+            <p style="font-size:14px;color:var(--text-muted);">Andromeda is smarter than manual targeting. Give it diverse creative and let the algorithm find the buyers. Over-targeting limits reach and increases CPM.</p>
         </div>
+        <div>
+            <h3 style="color:var(--accent);">Ad Set Structure</h3>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Option A: ABO by Cluster</h3>
+                <p>5 ad sets, one per location cluster. $20/day each. You control budget per area. Best for testing phase.</p>
+            </div>
+            <div class="card">
+                <h3>Option B: CBO with Locations</h3>
+                <p>One campaign, 5 ad sets, algorithm decides budget allocation. Best when you have data showing what works. Move to this in Month 2-3.</p>
+            </div>
+            <div class="card" style="margin-top:10px;border-color:var(--accent);">
+                <h3>Creative Load</h3>
+                <p>20-25 individual ads per ad set. Each genuinely different (Andromeda compliance). Mix of video, static, and carousel.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <!-- SLIDE 4: What Needs Work -->
-        <div class="slide" data-slide="3">
-            <div class="slide-label">Current State</div>
-            <h2>What needs to change</h2>
-            <ul class="check-list x-list">
-                <li><strong>Ads going to homepage.</strong> Too many options, too many clicks. Need dedicated landing pages per offer.</li>
-                <li><strong>3-day free pass is buried.</strong> Should be the primary offer for cold traffic.</li>
-                <li><strong>Tracking infrastructure unclear.</strong> Meta Pixel + Conversions API must be installed and verified. Nothing works without this.</li>
-                <li><strong>No retargeting running.</strong> Website visitors, video viewers, social engagers are not being followed up. Free money left on the table.</li>
-                <li><strong>Creative variety is low.</strong> Need UGC content: member testimonials, facility tours, price reaction videos.</li>
-                <li><strong>No location-specific targeting.</strong> Each gym should have its own geo-targeted ad set.</li>
+<!-- S17: PROSPECTING OFFERS -->
+<div class="slide">
+    <div class="slide-label">Campaign 1: Prospecting</div>
+    <h2>Prospecting: Lead with the free pass</h2>
+    <div class="two-col">
+        <div>
+            <div class="card card-accent" style="text-align:center;padding:28px;margin-bottom:16px;">
+                <div style="font-size:42px;font-weight:900;color:var(--accent);">3-Day Free Pass</div>
+                <div style="font-size:14px;color:var(--text-muted);margin-top:8px;">Primary offer for all cold traffic</div>
+            </div>
+            <div class="quote">"For cold traffic, the free pass is unbeatable. Zero cost. Zero commitment. Zero risk. The only thing they're giving you is an email and a phone number. The gym experience sells the membership."</div>
+        </div>
+        <div>
+            <h3>Why not lead with $4/week?</h3>
+            <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Even at $4/week, cold traffic has higher friction with a paid offer. The free pass gets them through the door. Staff converts in person. Conversion rate on free trials is significantly higher than direct-to-paid.</p>
+            <h3>Lead Form Setup</h3>
+            <ul class="check-list">
+                <li>Question 1: Closest location (dropdown, all 17)</li>
+                <li>Question 2: Have you been a member before? (Y/N)</li>
+                <li>Question 3: Best phone number (pre-filled)</li>
+                <li>Max 3 questions. More = fewer completions.</li>
             </ul>
+            <h3 style="margin-top:12px;">The 5-Minute Rule</h3>
+            <p style="font-size:14px;color:var(--text-muted);">Text within 5 minutes of form submission. Call within 15. Data shows 3-5x higher close rate when contacted in under 5 minutes vs. 1 hour.</p>
         </div>
+    </div>
+</div>
 
-        <!-- SLIDE 5: Campaign Architecture -->
-        <div class="slide" data-slide="4">
-            <div class="slide-label">Campaign Architecture</div>
-            <h2>Three campaigns. Simple structure.</h2>
-            <div class="card-grid grid-3" style="margin-top: 24px;">
-                <div class="card card-accent">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h3 style="margin:0;">Prospecting</h3>
-                        <span class="badge badge-green">60% Budget</span>
-                    </div>
-                    <p><strong style="color:var(--text)">Goal:</strong> New leads</p>
-                    <p><strong style="color:var(--text)">Audience:</strong> Broad local, 5-15km radius, 25-65+</p>
-                    <p><strong style="color:var(--text)">Offer:</strong> 3-day free pass</p>
-                    <p><strong style="color:var(--text)">Creative:</strong> UGC, facility tours, price shock</p>
-                </div>
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h3 style="margin:0;">Retargeting</h3>
-                        <span class="badge badge-blue">25% Budget</span>
-                    </div>
-                    <p><strong style="color:var(--text)">Goal:</strong> Convert warm traffic</p>
-                    <p><strong style="color:var(--text)">Audience:</strong> Site visitors, video viewers, engagers</p>
-                    <p><strong style="color:var(--text)">Offer:</strong> $10/mo promo (March 31 deadline)</p>
-                    <p><strong style="color:var(--text)">Creative:</strong> Urgency, testimonials, countdown</p>
-                </div>
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h3 style="margin:0;">Geo-Conquest</h3>
-                        <span class="badge badge-orange">15% Budget</span>
-                    </div>
-                    <p><strong style="color:var(--text)">Goal:</strong> Steal competitor members</p>
-                    <p><strong style="color:var(--text)">Audience:</strong> Near Anytime, Fitness World, GoodLife</p>
-                    <p><strong style="color:var(--text)">Offer:</strong> "$4/week vs what you pay now"</p>
-                    <p><strong style="color:var(--text)">Creative:</strong> Price comparison, switch and save</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 6: Offer Ladder -->
-        <div class="slide" data-slide="5">
-            <div class="slide-label">Offer Strategy</div>
-            <h2>Offer ladder by traffic temperature</h2>
-            <div class="card-grid" style="grid-template-columns: 1fr; gap: 12px; margin-top: 24px;">
-                <div class="card" style="display:grid; grid-template-columns: 140px 1fr 1fr; gap:20px; align-items:center;">
-                    <div>
-                        <span class="badge badge-blue" style="font-size:13px; padding:6px 14px;">Cold Traffic</span>
-                    </div>
-                    <div>
-                        <h3 style="margin:0; font-size:18px;">3-Day Free Pass</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Zero commitment. Gets them in the door. Staff converts in-person.</p>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="font-size:13px; color:var(--text-muted);">Never heard of Club 16</span>
-                    </div>
-                </div>
-                <div class="card" style="display:grid; grid-template-columns: 140px 1fr 1fr; gap:20px; align-items:center;">
-                    <div>
-                        <span class="badge badge-orange" style="font-size:13px; padding:6px 14px;">Warm Traffic</span>
-                    </div>
-                    <div>
-                        <h3 style="margin:0; font-size:18px;">$10/Month Promo</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">They already know you. Give them urgency. March 31 deadline.</p>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="font-size:13px; color:var(--text-muted);">Visited site, watched video, engaged</span>
-                    </div>
-                </div>
-                <div class="card card-accent" style="display:grid; grid-template-columns: 140px 1fr 1fr; gap:20px; align-items:center;">
-                    <div>
-                        <span class="badge badge-green" style="font-size:13px; padding:6px 14px;">Hot Traffic</span>
-                    </div>
-                    <div>
-                        <h3 style="margin:0; font-size:18px;">Direct Signup</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">"No contract, cancel anytime." Remove the last objection.</p>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="font-size:13px; color:var(--text-muted);">Visited signup page, didn't convert</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 7: Creative Strategy -->
-        <div class="slide" data-slide="6">
-            <div class="slide-label">Creative Strategy</div>
-            <h2>6 ad concepts to produce</h2>
-            <div class="card-grid grid-3" style="margin-top: 20px;">
-                <div class="card card-accent">
-                    <span class="badge badge-green" style="margin-bottom:10px;">Priority</span>
-                    <h3>"Price Shock" Reel</h3>
-                    <p>Member walks through gym showing equipment. End card: "All of this. $4 a week." UGC style, iPhone footage.</p>
-                </div>
-                <div class="card card-accent">
-                    <span class="badge badge-green" style="margin-bottom:10px;">Priority</span>
-                    <h3>"Facility Tour" Reel</h3>
-                    <p>Staff walkthrough during quiet hours. Cardio, weights, group class, recovery. Highlights what's included at $4/week.</p>
-                </div>
-                <div class="card card-accent">
-                    <span class="badge badge-green" style="margin-bottom:10px;">Priority</span>
-                    <h3>"$10/Month" Static</h3>
-                    <p>Bold graphic with countdown. "$10/MONTH. Offer ends March 31." Retargeting only.</p>
-                </div>
-                <div class="card">
-                    <h3>"Member Testimonial" UGC</h3>
-                    <p>Real member to camera. "I was paying $50/month. Now I pay $4/week and the equipment is just as good."</p>
-                </div>
-                <div class="card">
-                    <h3>"Comparison" Carousel</h3>
-                    <p>Card 1: What you pay at most gyms. Card 2: What you pay at Club 16. Card 3: Same equipment. Card 4: Free trial CTA.</p>
-                </div>
-                <div class="card">
-                    <h3>"She's FIT" Reel</h3>
-                    <p>Women-only space tour. Community vibe, group class. "A gym built for women. $4.99/week." Target: Women 25-55.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 8: Hook Framework -->
-        <div class="slide" data-slide="7">
-            <div class="slide-label">Creative Strategy</div>
-            <h2>5 hook angles to test</h2>
-            <div style="margin-top: 32px;">
-                <div style="padding: 20px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <span style="font-size:28px; font-weight:900; color:var(--accent); width:40px;">01</span>
-                    <div>
-                        <h3 style="margin:0; font-size:20px;">Price Shock</h3>
-                        <p style="color:var(--text-muted); font-size:15px; margin-top:4px;">"We charge $4/week. Here's what you actually get."</p>
-                    </div>
-                </div>
-                <div style="padding: 20px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <span style="font-size:28px; font-weight:900; color:var(--accent); width:40px;">02</span>
-                    <div>
-                        <h3 style="margin:0; font-size:20px;">Competitor Comparison</h3>
-                        <p style="color:var(--text-muted); font-size:15px; margin-top:4px;">"Stop paying $50/month for a gym."</p>
-                    </div>
-                </div>
-                <div style="padding: 20px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <span style="font-size:28px; font-weight:900; color:var(--accent); width:40px;">03</span>
-                    <div>
-                        <h3 style="margin:0; font-size:20px;">No Commitment</h3>
-                        <p style="color:var(--text-muted); font-size:15px; margin-top:4px;">"Try us free for 3 days. No contract. Cancel anytime."</p>
-                    </div>
-                </div>
-                <div style="padding: 20px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <span style="font-size:28px; font-weight:900; color:var(--accent); width:40px;">04</span>
-                    <div>
-                        <h3 style="margin:0; font-size:20px;">Local Hero</h3>
-                        <p style="color:var(--text-muted); font-size:15px; margin-top:4px;">"Trevor Linden built this gym so everyone could afford to be fit."</p>
-                    </div>
-                </div>
-                <div style="padding: 20px 0; display:flex; gap:20px; align-items:center;">
-                    <span style="font-size:28px; font-weight:900; color:var(--accent); width:40px;">05</span>
-                    <div>
-                        <h3 style="margin:0; font-size:20px;">Women's Safety</h3>
-                        <p style="color:var(--text-muted); font-size:15px; margin-top:4px;">"A gym that's actually built for women." (She's FIT)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 9: Funnel -->
-        <div class="slide" data-slide="8">
-            <div class="slide-label">Funnel Structure</div>
-            <h2>Dedicated landing pages, not homepage</h2>
-            <div class="two-col" style="margin-top:20px;">
-                <div>
-                    <h3 style="color:var(--accent);">Funnel A: Free Trial (Cold)</h3>
-                    <div class="funnel-step">
-                        <div class="funnel-num">1</div>
-                        <div class="funnel-text">Meta Ad <span>3-day free pass creative</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num">2</div>
-                        <div class="funnel-text">Landing Page <span>"Your 3-Day Free Pass"</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num">3</div>
-                        <div class="funnel-text">Lead Form <span>Name, email, phone, location</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num">4</div>
-                        <div class="funnel-text">Email/SMS Reminder <span>Day before visit</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num">5</div>
-                        <div class="funnel-text">Staff Converts <span>In-person membership pitch</span></div>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="color:var(--blue);">Funnel B: Promo (Retargeting)</h3>
-                    <div class="funnel-step">
-                        <div class="funnel-num" style="background:var(--blue);">1</div>
-                        <div class="funnel-text">Meta Ad <span>$10/month, expires March 31</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num" style="background:var(--blue);">2</div>
-                        <div class="funnel-text">Promo Landing Page <span>Countdown timer</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num" style="background:var(--blue);">3</div>
-                        <div class="funnel-text">Online Signup <span>Select location + payment</span></div>
-                    </div>
-                    <div class="arrow-down">|</div>
-                    <div class="funnel-step">
-                        <div class="funnel-num" style="background:var(--blue);">4</div>
-                        <div class="funnel-text">Confirmation Email <span>First visit guide</span></div>
-                    </div>
-                    <br>
-                    <h3 style="color:var(--orange); margin-top:16px;">Funnel C: She's FIT (Women)</h3>
-                    <p class="small-text">Same structure as Funnel A but with women-only messaging, She's FIT branding, and class schedule in welcome email.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 10: Budget -->
-        <div class="slide" data-slide="9">
-            <div class="slide-label">Budget Framework</div>
-            <h2>Start at $2-3K/month, scale with data</h2>
-            <div class="table-wrap" style="margin-top: 24px;">
+<!-- S18: RETARGETING DEEP DIVE -->
+<div class="slide">
+    <div class="slide-label">Campaign 2: Retargeting</div>
+    <h2>Retargeting: The 98% rule</h2>
+    <div class="two-col">
+        <div>
+            <div class="quote">"98% of website visitors don't convert on the first visit. They're interested but not yet convinced. Retargeting brings them back when they're ready."</div>
+            <h3 style="margin-top:16px;">Retargeting Audience Stack</h3>
+            <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Phase</th>
-                            <th>Monthly Spend</th>
-                            <th>Daily Spend</th>
-                            <th>Focus</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Audience</th><th>Window</th><th>Priority</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td><span class="badge badge-green">Month 1</span></td>
-                            <td>$2,000 - $3,000</td>
-                            <td>$65 - $100</td>
-                            <td>Test 3 creatives, 3 audiences, find winners</td>
-                        </tr>
-                        <tr>
-                            <td><span class="badge badge-blue">Month 2-3</span></td>
-                            <td>$3,000 - $5,000</td>
-                            <td>$100 - $165</td>
-                            <td>Scale winners 2x, kill underperformers</td>
-                        </tr>
-                        <tr>
-                            <td><span class="badge badge-orange">Month 4+</span></td>
-                            <td>$5,000 - $10,000</td>
-                            <td>$165 - $330</td>
-                            <td>Full location rollout, proven creatives</td>
-                        </tr>
+                        <tr><td>Website visitors</td><td>180 days</td><td><span class="badge badge-green">High</span></td></tr>
+                        <tr><td>Pricing page visitors</td><td>90 days</td><td><span class="badge badge-green">High</span></td></tr>
+                        <tr><td>Video viewers (50%+)</td><td>365 days</td><td><span class="badge badge-blue">Medium</span></td></tr>
+                        <tr><td>IG engagers (all types)</td><td>365 days</td><td><span class="badge badge-blue">Medium</span></td></tr>
+                        <tr><td>FB page engagers</td><td>365 days</td><td><span class="badge badge-blue">Medium</span></td></tr>
+                        <tr><td>Lead form openers (didn't submit)</td><td>90 days</td><td><span class="badge badge-green">High</span></td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="card-grid grid-3" style="margin-top: 20px;">
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Prospecting</div>
-                    <div style="font-size:28px; font-weight:800; color:var(--accent);">60%</div>
-                    <div class="pct-bar"><div class="pct-fill" style="width:60%;"></div></div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Retargeting</div>
-                    <div style="font-size:28px; font-weight:800; color:var(--blue);">25%</div>
-                    <div class="pct-bar"><div class="pct-fill" style="width:25%; background:var(--blue);"></div></div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Geo-Conquest</div>
-                    <div style="font-size:28px; font-weight:800; color:var(--orange);">15%</div>
-                    <div class="pct-bar"><div class="pct-fill" style="width:15%; background:var(--orange);"></div></div>
-                </div>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Performance Advantage</h3>
+            <div class="card" style="margin-bottom:10px;text-align:center;">
+                <div style="font-size:48px;font-weight:900;color:var(--accent);">76%</div>
+                <p>Higher CTR than prospecting ads</p>
+            </div>
+            <div class="card" style="margin-bottom:10px;text-align:center;">
+                <div style="font-size:48px;font-weight:900;color:var(--accent);">2-5x</div>
+                <p>Better conversion rate than cold traffic</p>
+            </div>
+            <div class="card" style="text-align:center;">
+                <div style="font-size:48px;font-weight:900;color:var(--accent);">50%</div>
+                <p>Lower cost per acquisition</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- SLIDE 11: KPIs -->
-        <div class="slide" data-slide="10">
-            <div class="slide-label">Performance Targets</div>
-            <h2>KPIs that matter</h2>
-            <div class="table-wrap" style="margin-top: 24px;">
+<!-- S19: RETARGETING CONTENT STRATEGY -->
+<div class="slide">
+    <div class="slide-label">Campaign 2: Retargeting</div>
+    <h2>Retargeting: The "Hammer Them" content strategy</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Don't just run the same "Join Now" ad repeatedly. Create content across four pillars that addresses every reason someone hasn't signed up yet.</p>
+    <div class="card-grid grid-4">
+        <div class="card card-accent">
+            <h3>Questions</h3>
+            <p>What do people need to know?</p>
+            <ul>
+                <li>"What are your hours?"</li>
+                <li>"Do you have free weights?"</li>
+                <li>"What classes are included?"</li>
+                <li>"Is parking available?"</li>
+                <li>"What's the recovery centre?"</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Objections</h3>
+            <p>What's stopping them?</p>
+            <ul>
+                <li>"I don't have time"</li>
+                <li>"I'm intimidated"</li>
+                <li>"It's too expensive"</li>
+                <li>"I won't stick with it"</li>
+                <li>"I don't know what to do"</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Expectations</h3>
+            <p>What will it be like?</p>
+            <ul>
+                <li>"What happens on day 1?"</li>
+                <li>"How do I sign up for class?"</li>
+                <li>"What's the free orientation?"</li>
+                <li>"How long until I see results?"</li>
+                <li>"What should I bring?"</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Social Proof</h3>
+            <p>Who else is like me here?</p>
+            <ul>
+                <li>Member testimonials (video)</li>
+                <li>Before/after transformations</li>
+                <li>Busy gym floor footage</li>
+                <li>Community event highlights</li>
+                <li>Trainer introductions</li>
+            </ul>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top:12px;">Create 3-5 pieces of content for each pillar. That's 12-20 retargeting ads that all feel different but serve one goal: removing doubt.</p>
+</div>
+
+<!-- S20: GEO-CONQUEST -->
+<div class="slide">
+    <div class="slide-label">Campaign 3: Geo-Conquest</div>
+    <h2>Geo-Conquest: Steal their members</h2>
+    <div class="two-col">
+        <div>
+            <div class="quote">"Target people near competitor gym locations with ads that make the price difference impossible to ignore. You don't need to name competitors. The comparison speaks for itself."</div>
+            <h3 style="margin-top:16px;">Targeting Setup</h3>
+            <ul class="check-list">
+                <li>Drop pin on each Anytime Fitness, Fitness World, and GoodLife location in BC</li>
+                <li>2-5km radius around each competitor location</li>
+                <li>Ages 18-55, no interest targeting</li>
+                <li>Exclude current Club 16 members</li>
+            </ul>
+            <h3 style="margin-top:16px;">Messaging Angles</h3>
+            <ul class="check-list">
+                <li>"Paying $50/month for a gym? We charge $4/week."</li>
+                <li>"Same equipment. Fraction of the price. No contract."</li>
+                <li>"Switch and save $500+ per year."</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Competitor Locations to Target</h3>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Anytime Fitness</h3>
+                <p>Multiple locations across Metro Vancouver. $25-60/month. Franchise model = inconsistent experience.</p>
+            </div>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Fitness World / Steve Nash</h3>
+                <p>23+ locations. $25-60/month. Hidden annual fees. Many locations near Club 16 gyms.</p>
+            </div>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>GoodLife Fitness</h3>
+                <p>3 locations in BC. $40-80/month. Premium pricing, corporate feel.</p>
+            </div>
+            <div class="card">
+                <h3>Budget: 15% of total</h3>
+                <p>This is a supplementary campaign. Start small, scale if CPL is competitive. Expect slightly higher CPL than prospecting but higher intent leads.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S21: SECTION DIVIDER - OFFER LADDER -->
+<div class="slide section-divider">
+    <div class="section-num">04</div>
+    <div class="slide-label" style="margin-top:12px;">Section Four</div>
+    <h1>Offer Ladder<br><span class="highlight">& Funnels</span></h1>
+    <p class="subtitle" style="margin-top:12px;">What to promote to whom, and the conversion path from ad to member.</p>
+</div>
+
+<!-- S22: OFFER LADDER -->
+<div class="slide">
+    <div class="slide-label">Offer Ladder</div>
+    <h2>Match the offer to the traffic temperature</h2>
+    <div style="margin-top:24px;">
+        <div class="card" style="display:grid;grid-template-columns:120px 1fr 1fr;gap:16px;align-items:center;margin-bottom:12px;">
+            <div><span class="badge badge-blue" style="font-size:12px;padding:6px 12px;">Cold</span></div>
+            <div><h3 style="margin:0;font-size:17px;">3-Day Free Pass</h3><p style="font-size:12px;color:var(--text-muted);margin-top:2px;">Zero commitment. Gets them in the door. Staff converts to membership in-person.</p></div>
+            <div style="text-align:right;"><span style="font-size:12px;color:var(--text-muted);">Never heard of Club 16. Scrolling feed. Need zero-risk entry.</span></div>
+        </div>
+        <div class="card" style="display:grid;grid-template-columns:120px 1fr 1fr;gap:16px;align-items:center;margin-bottom:12px;">
+            <div><span class="badge badge-orange" style="font-size:12px;padding:6px 12px;">Warm</span></div>
+            <div><h3 style="margin:0;font-size:17px;">$10/Month Promo</h3><p style="font-size:12px;color:var(--text-muted);margin-top:2px;">They already know you. Give them urgency. Deadline creates action.</p></div>
+            <div style="text-align:right;"><span style="font-size:12px;color:var(--text-muted);">Visited site, watched video, engaged on social. Interested, not committed.</span></div>
+        </div>
+        <div class="card card-accent" style="display:grid;grid-template-columns:120px 1fr 1fr;gap:16px;align-items:center;margin-bottom:12px;">
+            <div><span class="badge badge-green" style="font-size:12px;padding:6px 12px;">Hot</span></div>
+            <div><h3 style="margin:0;font-size:17px;">Direct Signup + No Contract</h3><p style="font-size:12px;color:var(--text-muted);margin-top:2px;">"No contract, cancel anytime." Remove the last objection. Push them over.</p></div>
+            <div style="text-align:right;"><span style="font-size:12px;color:var(--text-muted);">Visited signup page but didn't convert. One nudge away.</span></div>
+        </div>
+        <div class="card" style="display:grid;grid-template-columns:120px 1fr 1fr;gap:16px;align-items:center;">
+            <div><span class="badge badge-purple" style="font-size:12px;padding:6px 12px;">She's FIT</span></div>
+            <div><h3 style="margin:0;font-size:17px;">Women-Only Free Trial</h3><p style="font-size:12px;color:var(--text-muted);margin-top:2px;">Separate creative, separate messaging, separate landing page. Comfort and community first.</p></div>
+            <div style="text-align:right;"><span style="font-size:12px;color:var(--text-muted);">Women 25-55 in Surrey, Burnaby, Delta areas near She's FIT locations.</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- S23: FUNNEL A - FREE TRIAL -->
+<div class="slide">
+    <div class="slide-label">Funnel Structure</div>
+    <h2>Funnel A: Free Trial (Cold Traffic)</h2>
+    <div class="two-col">
+        <div>
+            <div class="funnel-step"><div class="funnel-num">1</div><div class="funnel-text">Meta Ad <span>3-day free pass creative (Reel, UGC, or static)</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num">2</div><div class="funnel-text">Lead Form (In-Platform) <span>Name, phone, location. Pre-filled. Under 30 seconds.</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num">3</div><div class="funnel-text">Instant Confirmation <span>Text + email with pass details and location info</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num">4</div><div class="funnel-text">5-Minute Follow-Up <span>Personal text from staff. Then call within 15 min.</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num">5</div><div class="funnel-text">Selfie Video from Trainer <span>"Hey [Name], I'm at your gym, can't wait to meet you!"</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num">6</div><div class="funnel-text">Show Up for Trial <span>Staff converts to paid membership in person</span></div></div>
+        </div>
+        <div>
+            <div class="card card-accent" style="margin-bottom:12px;">
+                <h3>Why In-Platform Lead Forms</h3>
+                <p>For a $4/week membership, you don't need a full landing page. Lead forms keep everything inside Facebook. Info is pre-filled. They tap, confirm, done. Lowest possible friction.</p>
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Alternative: Dedicated Landing Page</h3>
+                <p>If you want more control over the experience, build a simple landing page: one headline, one image, one form, one CTA. "Your 3-Day Free Pass at Club 16 [Location]."</p>
+            </div>
+            <div class="card">
+                <h3>Key Metric</h3>
+                <p>Track <strong style="color:var(--text)">lead-to-trial show rate</strong>. Industry average is 30-40%. The selfie video + 5-minute text can push this above 50%.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S24: FUNNEL B - PROMO -->
+<div class="slide">
+    <div class="slide-label">Funnel Structure</div>
+    <h2>Funnel B: $10/Month Promo (Retargeting)</h2>
+    <div class="two-col">
+        <div>
+            <div class="funnel-step"><div class="funnel-num" style="background:var(--blue);">1</div><div class="funnel-text">Retargeting Ad <span>$10/month with countdown to March 31</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num" style="background:var(--blue);">2</div><div class="funnel-text">Promo Landing Page <span>Countdown timer. One offer. Location selector.</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num" style="background:var(--blue);">3</div><div class="funnel-text">Online Signup Form <span>Select location, personal info, payment</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num" style="background:var(--blue);">4</div><div class="funnel-text">Confirmation Page <span>Strategic confirmation page (per SOP)</span></div></div>
+            <div class="arrow-down">|</div>
+            <div class="funnel-step"><div class="funnel-num" style="background:var(--blue);">5</div><div class="funnel-text">Onboarding Email Sequence <span>Welcome, first visit guide, day 3 check-in, day 7 class invite</span></div></div>
+        </div>
+        <div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Landing Page Requirements</h3>
+                <ul>
+                    <li>Countdown timer showing days/hours until March 31</li>
+                    <li>One headline: "$10/Month. No Contract. Ends March 31."</li>
+                    <li>Location dropdown (auto-detect if possible)</li>
+                    <li>3 bullet points: what's included</li>
+                    <li>Member testimonial (one is enough)</li>
+                    <li>Single CTA button: "Join Now"</li>
+                    <li>Mobile-first design (80%+ traffic is mobile)</li>
+                </ul>
+            </div>
+            <div class="card card-accent">
+                <h3>Critical: Confirmation Page</h3>
+                <p>This is NOT a "Thank You" page. It's a strategic asset that combats buyer's remorse, builds excitement, and drives the first visit. Follow the Confirmation Page SOP.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S25: FUNNEL C - SHE'S FIT -->
+<div class="slide">
+    <div class="slide-label">Funnel Structure</div>
+    <h2>Funnel C: She's FIT (Women-Only)</h2>
+    <div class="two-col">
+        <div>
+            <div class="card card-accent" style="margin-bottom:16px;">
+                <h3>Separate Brand = Separate Campaign</h3>
+                <p>She's FIT is not an ad set within Club 16. It gets its own campaign with its own budget, creative, and messaging. The brand identity is different. The audience is different. The emotional triggers are different.</p>
+            </div>
+            <h3 style="color:var(--accent);">Targeting</h3>
+            <ul class="check-list">
+                <li>Women only, ages 25-55</li>
+                <li>5-10km around each She's FIT location</li>
+                <li>Locations: Surrey (3), North Delta, Metrotown, Surrey Central</li>
+                <li>Budget: $10-15/day across all locations</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Messaging Focus</h3>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Comfort, Not Competition</h3>
+                <p>"A gym that's actually built for women." Focus on safety, community, supportive atmosphere. Not intimidating. Not competitive.</p>
+            </div>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Community, Not Isolation</h3>
+                <p>Group class footage. Women supporting each other. Staff welcoming new members. The vibe sells.</p>
+            </div>
+            <div class="card" style="margin-bottom:10px;">
+                <h3>Empowerment, Not Price-First</h3>
+                <p>Lead with the women-only space. Price is secondary. "Starting at $4.99/week" as supporting detail, not the headline.</p>
+            </div>
+            <div class="card">
+                <h3>Creative Rules</h3>
+                <p>Only women on camera. Film only at She's FIT locations. Different tone than Club 16 ads. Launch AFTER Club 16 campaigns are running.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S26: SECTION DIVIDER - CREATIVE -->
+<div class="slide section-divider">
+    <div class="section-num">05</div>
+    <div class="slide-label" style="margin-top:12px;">Section Five</div>
+    <h1>Creative<br><span class="highlight">Strategy</span></h1>
+    <p class="subtitle" style="margin-top:12px;">What to film, how to film it, and the hooks that stop the scroll.</p>
+</div>
+
+<!-- S27: META CREATIVE LANDSCAPE 2026 -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>What's working on Meta right now</h2>
+    <div class="card-grid grid-3">
+        <div class="card card-accent" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--accent);">52%</div>
+            <p><strong style="color:var(--text)">More Views</strong></p>
+            <p>Reels get 52% more views than other formats on average</p>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--blue);">34%</div>
+            <p><strong style="color:var(--text)">More Engagement</strong></p>
+            <p>Reels drive 34% more interactions (likes, comments, shares)</p>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--orange);">10-30%</div>
+            <p><strong style="color:var(--text)">Cheaper CPM</strong></p>
+            <p>Reels ads cost 10-30% less per thousand impressions</p>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--accent);">4x</div>
+            <p><strong style="color:var(--text)">UGC CTR</strong></p>
+            <p>User-generated content gets 4x higher click-through than branded</p>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--blue);">$34</div>
+            <p><strong style="color:var(--text)">Lead Form CPL</strong></p>
+            <p>In-platform lead forms average $34 CPL (lowest of all formats)</p>
+        </div>
+        <div class="card" style="text-align:center;">
+            <div style="font-size:36px;font-weight:900;color:var(--orange);">24%</div>
+            <p><strong style="color:var(--text)">Higher Recall</strong></p>
+            <p>Reels-specific ads show 24% higher ad recall vs feed</p>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top:12px;"><strong style="color:var(--text)">Translation:</strong> Reels + UGC + lead forms = your creative formula. Native, unpolished, authentic video outperforms everything.</p>
+</div>
+
+<!-- S28: 6 AD CONCEPTS -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>6 ad concepts to produce</h2>
+    <div class="card-grid grid-3">
+        <div class="card card-accent"><span class="badge badge-green" style="margin-bottom:8px;">Priority 1</span><h3>"Price Shock" Reel</h3><p>Member walks through gym showing equipment, classes, amenities. End card: "All of this. $4 a week." UGC style, iPhone footage, authentic reaction.</p></div>
+        <div class="card card-accent"><span class="badge badge-green" style="margin-bottom:8px;">Priority 2</span><h3>"Facility Tour" Reel</h3><p>Staff walks through during quiet hours. Cardio, weights, group class in action, recovery. Voiceover highlights what's included at $4/week.</p></div>
+        <div class="card card-accent"><span class="badge badge-green" style="margin-bottom:8px;">Priority 3</span><h3>"$10/Month Countdown"</h3><p>Bold static graphic: "$10/MONTH. Offer ends March 31." Clean design, countdown urgency. Retargeting only. Update weekly.</p></div>
+        <div class="card"><span class="badge badge-blue" style="margin-bottom:8px;">Phase 2</span><h3>"Member Testimonial" UGC</h3><p>Real member to camera: "I was paying $50/month at [competitor]. Now I pay $4/week and the equipment is just as good." No script, real location.</p></div>
+        <div class="card"><span class="badge badge-blue" style="margin-bottom:8px;">Phase 2</span><h3>"Comparison" Carousel</h3><p>Card 1: What you pay at most gyms ($50-80/mo). Card 2: What you pay here ($4/wk). Card 3: Same equipment. Card 4: Free trial CTA.</p></div>
+        <div class="card"><span class="badge badge-purple" style="margin-bottom:8px;">She's FIT</span><h3>"Women-Only" Reel</h3><p>Women-only space tour. Community vibe, group class. "A gym built for women. $4.99/week." Target women 25-55, She's FIT areas.</p></div>
+    </div>
+</div>
+
+<!-- S29: PRICE SHOCK DEEP DIVE -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>Ad Concept 1: "Price Shock" Reel</h2>
+    <div class="two-col">
+        <div>
+            <h3 style="color:var(--accent);">The Script</h3>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Hook (0-3s)</h3>
+                <p>"I pay $4 a week for my gym. Let me show you what that actually gets me."</p>
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Body (3-25s)</h3>
+                <p>[Walk through gym] "State-of-the-art cardio. Full free weight section. [Show machines] Every machine you'd find at a $60/month gym. [Show class] Unlimited group fitness classes. [Show recovery] Recovery centre. [Show locker room] Clean locker rooms."</p>
+            </div>
+            <div class="card">
+                <h3>CTA (25-35s)</h3>
+                <p>"All of this. Four dollars a week. No contract. Cancel anytime. Link below for a free 3-day pass."</p>
+            </div>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Production Notes</h3>
+            <ul class="check-list">
+                <li>Film with iPhone rear camera (wipe lens first)</li>
+                <li>Vertical 9:16 format (Reels/Stories)</li>
+                <li>Use Rode Wireless Go 2 lapel mic</li>
+                <li>Film during off-peak hours (cleaner shots)</li>
+                <li>Member or trainer on camera (not corporate)</li>
+                <li>Walk-and-talk format, keep moving</li>
+                <li>Natural lighting preferred</li>
+                <li>Add captions (80% watch without sound)</li>
+                <li>Add 4:5 text banner at top with hook line</li>
+                <li>30-45 seconds total length</li>
+            </ul>
+            <div class="card card-accent" style="margin-top:12px;">
+                <h3>Why This Works</h3>
+                <p>The gap between "$4/week" and what they SEE creates cognitive dissonance. They expect a dump. They see premium equipment. That surprise is the conversion trigger.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S30: FACILITY TOUR DEEP DIVE -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>Ad Concept 2: "Facility Tour" Reel</h2>
+    <div class="two-col">
+        <div>
+            <h3 style="color:var(--accent);">The Script</h3>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Hook (0-3s)</h3>
+                <p>"Here's what a $4/week gym actually looks like inside."</p>
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Body (3-30s)</h3>
+                <p>[Trainer walks in] "This is Club 16 [Location]. We've got [pan across cardio] all the cardio you need. [Move to weights] Full free weight section. [Group class] Unlimited classes every day. [Recovery] Recovery centre for after your workout. [Locker room] And everything's clean."</p>
+            </div>
+            <div class="card">
+                <h3>CTA (30-40s)</h3>
+                <p>"Come try us free for 3 days. No commitment. Just come see it for yourself. Link below."</p>
+            </div>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Key Differences from Price Shock</h3>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Trainer on camera, not member</h3>
+                <p>This builds trust through authority. The trainer is the guide. They're welcoming you in.</p>
+            </div>
+            <div class="card" style="margin-bottom:12px;">
+                <h3>Location-specific versions</h3>
+                <p>Film at 4-5 different locations. Each becomes a unique ad. Different gym = different ad for Andromeda.</p>
+            </div>
+            <div class="card">
+                <h3>Removes intimidation</h3>
+                <p>People are scared to walk into a gym for the first time. Showing the space before they visit reduces anxiety and increases show rate.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S31: HOOKS -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>5 hook angles to test first</h2>
+    <div style="margin-top:20px;">
+        <div class="num-item"><div class="num-circle">01</div><div class="num-content"><h3>Price Shock</h3><p>"We charge $4/week. Here's what you actually get for that." / "I pay $4 a week for my gym. Let me show you."</p></div></div>
+        <div class="num-item"><div class="num-circle">02</div><div class="num-content"><h3>Competitor Comparison</h3><p>"Stop paying $50/month for a gym." / "What if your gym cost less than your morning coffee?"</p></div></div>
+        <div class="num-item"><div class="num-circle">03</div><div class="num-content"><h3>No Commitment</h3><p>"Try us free for 3 days. No contract. Cancel anytime." / "The gym with nothing to hide. No contract, ever."</p></div></div>
+        <div class="num-item"><div class="num-circle">04</div><div class="num-content"><h3>Local Hero</h3><p>"Trevor Linden built this gym so everyone could afford to be fit." / "A gym by a BC legend, for BC people."</p></div></div>
+        <div class="num-item"><div class="num-circle">05</div><div class="num-content"><h3>Women's Safety (She's FIT)</h3><p>"A gym that's actually built for women." / "What if you never felt judged at the gym again?"</p></div></div>
+    </div>
+    <p class="small-text" style="margin-top:16px;"><strong style="color:var(--text)">Remember the Stalker Hook principle:</strong> The more specific the hook, the harder it is to scroll past. "If you've been paying $60/month for a gym you only visit twice, and you're kinda embarrassed about it..." That person CANNOT scroll past.</p>
+</div>
+
+<!-- S32: STALKER HOOKS FOR CLUB 16 -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>Stalker hooks for Club 16</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">These hooks are so specific the viewer feels like you're reading their mind. They consistently outperform every other hook category.</p>
+    <div class="card-grid grid-2">
+        <div class="card card-accent">
+            <h3>Budget-Conscious</h3>
+            <p style="font-size:15px;line-height:1.6;">"If you've been telling yourself you'll start going to the gym once you can afford it... what if it cost less than your daily coffee?"</p>
+        </div>
+        <div class="card card-accent">
+            <h3>Lapsed Member</h3>
+            <p style="font-size:15px;line-height:1.6;">"If you signed up for a gym in January, went twice, and you're still paying $50/month for it..."</p>
+        </div>
+        <div class="card">
+            <h3>Intimidated Beginner</h3>
+            <p style="font-size:15px;line-height:1.6;">"If you've been sitting in the gym parking lot and driving home because you didn't know where to start inside..."</p>
+        </div>
+        <div class="card">
+            <h3>Busy Professional</h3>
+            <p style="font-size:15px;line-height:1.6;">"If your work schedule is the reason you haven't been to a gym in 6 months, and you're starting to feel it in your back..."</p>
+        </div>
+        <div class="card">
+            <h3>She's FIT Persona</h3>
+            <p style="font-size:15px;line-height:1.6;">"If you stopped going to your gym because you felt like everyone was watching you, and you've been looking for a place where that doesn't happen..."</p>
+        </div>
+        <div class="card">
+            <h3>Price Switcher</h3>
+            <p style="font-size:15px;line-height:1.6;">"If you're paying $60/month at [competitor gym] and wondering if there's something just as good for a fraction of the price..."</p>
+        </div>
+    </div>
+</div>
+
+<!-- S33: CREATIVE TESTING -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>Creative testing: The 50/30/20 model</h2>
+    <div class="two-col">
+        <div>
+            <div class="card card-accent" style="margin-bottom:12px;"><h3>50% Budget: Proven Winners</h3><p>Your ads that are working. Highest ROAS. Keep running but create slight variations (different hook, same concept) to extend their life.</p><div class="pct-bar"><div class="pct-fill" style="width:50%;"></div></div></div>
+            <div class="card" style="margin-bottom:12px;"><h3>30% Budget: Adjacent Concepts</h3><p>New ads similar to winners but exploring different angles. If "price shock" is winning, try "price shock at a different location" or "price shock from a member instead of trainer."</p><div class="pct-bar"><div class="pct-fill" style="width:30%;background:var(--blue);"></div></div></div>
+            <div class="card"><h3>20% Budget: Experiments</h3><p>Bold new concepts. A humorous take on gym intimidation. A day-in-the-life. A trainer spotlight. These are long shots that might become tomorrow's winners.</p><div class="pct-bar"><div class="pct-fill" style="width:20%;background:var(--orange);"></div></div></div>
+        </div>
+        <div>
+            <h3 style="color:var(--accent);">Refresh Cycle: Every 2 Weeks</h3>
+            <div style="margin-top:12px;">
+                <div class="funnel-step"><div class="funnel-num">1</div><div class="funnel-text">Review performance <span>Which ads are Green, Yellow, Red?</span></div></div>
+                <div class="arrow-down">|</div>
+                <div class="funnel-step"><div class="funnel-num">2</div><div class="funnel-text">Pause underperformers <span>Kill Red ads from the 20% experiments</span></div></div>
+                <div class="arrow-down">|</div>
+                <div class="funnel-step"><div class="funnel-num">3</div><div class="funnel-text">Promote winners <span>Move successful 30% ads into the 50%</span></div></div>
+                <div class="arrow-down">|</div>
+                <div class="funnel-step"><div class="funnel-num">4</div><div class="funnel-text">Create new experiments <span>Refill the 20% with fresh concepts</span></div></div>
+            </div>
+            <div class="card" style="margin-top:12px;border-color:var(--accent);">
+                <h3>Andromeda Compliance</h3>
+                <p>Every ad must differ across all 3 dimensions: theme, messaging, and visuals. If two ads look similar, Andromeda treats them as one ad.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S34: FILMING DAY PLAN -->
+<div class="slide">
+    <div class="slide-label">Creative Strategy</div>
+    <h2>One filming day = 20-25 video ads</h2>
+    <div class="two-col">
+        <div>
+            <h3 style="color:var(--accent);">6-Hour Filming Block</h3>
+            <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>Target</th>
-                            <th>Industry Benchmark</th>
-                            <th>Why It Matters</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Time</th><th>Activity</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td>Cost Per Lead</td>
-                            <td><span class="highlight">&lt; $35</span></td>
-                            <td>$52.98</td>
-                            <td>Club 16's price advantage drives this below average</td>
-                        </tr>
-                        <tr>
-                            <td>Cost Per Trial Signup</td>
-                            <td><span class="highlight">&lt; $15</span></td>
-                            <td>$20-30</td>
-                            <td>Free pass should be cheap. If not, creative is the problem.</td>
-                        </tr>
-                        <tr>
-                            <td>Trial-to-Member Rate</td>
-                            <td><span class="highlight">&gt; 30%</span></td>
-                            <td>14.29%</td>
-                            <td>This is on staff, not ads. Track it.</td>
-                        </tr>
-                        <tr>
-                            <td>Cost Per New Member</td>
-                            <td><span class="highlight">&lt; $50</span></td>
-                            <td>$80-120</td>
-                            <td>The real metric. Lead cost + conversion rate.</td>
-                        </tr>
-                        <tr>
-                            <td>ROAS by Location</td>
-                            <td><span class="highlight">Track separately</span></td>
-                            <td>Varies</td>
-                            <td>Some locations outperform. Shift budget accordingly.</td>
-                        </tr>
+                        <tr><td>Hours 1-2</td><td>Warm-up, test shots, 60-second audio/video check</td></tr>
+                        <tr><td>Hours 2-4</td><td>Primary filming: 10-15 video ads across personas</td></tr>
+                        <tr><td>Hours 4-5</td><td>Bonus: gym tours, class highlights, B-roll</td></tr>
+                        <tr><td>Hours 5-6</td><td>She's FIT content (if at She's FIT location)</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p class="small-text" style="margin-top:16px;">LTV of a member staying 12 months at $10/mo = $120. Target acquisition cost of $30-50 = <strong style="color:var(--accent);">2.5-4x front-end return</strong>. Real profit is months 6-36+.</p>
         </div>
-
-        <!-- SLIDE 12: Competitive Intel -->
-        <div class="slide" data-slide="11">
-            <div class="slide-label">Competitive Intelligence</div>
-            <h2>Advantages to weaponize in ads</h2>
-            <div class="card-grid grid-3" style="margin-top: 24px;">
-                <div class="card card-accent">
-                    <h3 style="font-size:42px; margin-bottom:4px;">$4</h3>
-                    <p><strong style="color:var(--text)">Price</strong></p>
-                    <p>$4/week vs $25-80/month. The math sells itself. 6-10x cheaper.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size:42px; margin-bottom:4px;">0</h3>
-                    <p><strong style="color:var(--text)">Contracts</strong></p>
-                    <p>Cancel anytime. Competitors lock people in. This removes the #1 objection.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size:20px; margin-bottom:4px;">Trevor Linden</h3>
-                    <p><strong style="color:var(--text)">Local Hero</strong></p>
-                    <p>19-year NHL veteran. BC icon. Instant trust. No competitor has this.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size:20px; margin-bottom:4px;">She's FIT</h3>
-                    <p><strong style="color:var(--text)">Women-Only</strong></p>
-                    <p>6 dedicated women-only locations. Nobody else offers this in BC at this price.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size:42px; margin-bottom:4px;">17</h3>
-                    <p><strong style="color:var(--text)">Locations</strong></p>
-                    <p>"There's one near you." Convenience argument across the Lower Mainland.</p>
-                </div>
-                <div class="card">
-                    <h3 style="font-size:20px; margin-bottom:4px;">Equipment</h3>
-                    <p><strong style="color:var(--text)">Quality at Budget Price</strong></p>
-                    <p>State-of-the-art gear at budget prices. The surprise factor in every tour.</p>
-                </div>
+        <div>
+            <h3 style="color:var(--accent);">Equipment Checklist</h3>
+            <ul class="check-list">
+                <li>iPhone (rear camera, lens wiped)</li>
+                <li>Rode Wireless Go 2 lapel mic (~$200)</li>
+                <li>Ring light or softbox</li>
+                <li>Teleprompter app (second device)</li>
+                <li>Club 16 branded gear for on-camera talent</li>
+                <li>Script printouts / hook cards</li>
+            </ul>
+            <div class="card" style="margin-top:12px;border-color:var(--red);">
+                <h3>The 60-Second Test (Non-Negotiable)</h3>
+                <p>Before filming anything real, shoot a 60-second test. Check audio, lighting, and framing. All three must pass. Do NOT proceed until they do.</p>
             </div>
         </div>
-
-        <!-- SLIDE 13: Location Strategy -->
-        <div class="slide" data-slide="12">
-            <div class="slide-label">Location Strategy</div>
-            <h2>Start with 4, then scale to 17</h2>
-            <div class="two-col" style="margin-top:24px;">
-                <div>
-                    <h3 style="color:var(--accent); margin-bottom:16px;">Priority Test Locations</h3>
-                    <div class="card" style="margin-bottom:12px;">
-                        <h3>Downtown Vancouver</h3>
-                        <p>Highest density. Most competition. Premium pricing tier. Prove the model here first.</p>
-                    </div>
-                    <div class="card" style="margin-bottom:12px;">
-                        <h3>Brentwood</h3>
-                        <p>Dense suburban. Metrotown adjacent. High foot traffic. Young professionals.</p>
-                    </div>
-                    <div class="card" style="margin-bottom:12px;">
-                        <h3>Coquitlam</h3>
-                        <p>Growing suburb. Young families. Price-sensitive demographic.</p>
-                    </div>
-                    <div class="card">
-                        <h3>Surrey (She's FIT)</h3>
-                        <p>Multiple locations. Women-specific targeting. Underserved market.</p>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="margin-bottom:16px;">Per-Location Setup</h3>
-                    <ul class="check-list">
-                        <li>Geo-targeted ad sets (5-15km radius)</li>
-                        <li>Location-specific photos and video from THAT gym</li>
-                        <li>Landing page with auto-location selection</li>
-                        <li>Budget weighted by population density</li>
-                        <li>Separate performance tracking per location</li>
-                    </ul>
-                    <div class="card" style="margin-top:24px; border-color:var(--accent);">
-                        <h3 style="color:var(--accent);">The Model</h3>
-                        <p>Prove CPL and conversion rates at 4 locations. Then replicate the winning formula across all 17.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 14: Lower Ticket Tactics -->
-        <div class="slide" data-slide="13">
-            <div class="slide-label">Lower-Ticket Playbook</div>
-            <h2>At $4/week, the strategy changes</h2>
-            <div class="card-grid grid-2" style="margin-top: 24px;">
-                <div class="card">
-                    <h3>Volume Over Qualification</h3>
-                    <p>Cast a wide net. The price removes the biggest objection. Don't over-target. Let Meta's algorithm find the buyers.</p>
-                </div>
-                <div class="card">
-                    <h3>Speed to Conversion</h3>
-                    <p>Short funnels. Minimal form fields. Mobile-first. Free pass signup should take under 30 seconds.</p>
-                </div>
-                <div class="card">
-                    <h3>Impulse-Friendly Framing</h3>
-                    <p>"Less than a coffee a day." "$4/week. That's it." "Your gym costs less than Netflix."</p>
-                </div>
-                <div class="card">
-                    <h3>Social Proof at Scale</h3>
-                    <p>"17 locations. Thousands of members. $4/week." Numbers sell at this price point.</p>
-                </div>
-            </div>
-            <div class="card card-accent" style="margin-top:16px;">
-                <h3>Retention Is the Real Game</h3>
-                <p>Ads get them in the door. Experience keeps them paying. Post-signup email nurture: Day 1 welcome, Day 3 check-in, Day 7 class recommendation, Day 14 PT upsell, Day 30 celebration. LTV is months 6-36+.</p>
-            </div>
-        </div>
-
-        <!-- SLIDE 15: Action Items -->
-        <div class="slide" data-slide="14">
-            <div class="slide-label">This Week</div>
-            <h2>6 action items, priority order</h2>
-            <div style="margin-top: 24px;">
-                <div style="padding: 16px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">1</div>
-                    <div class="funnel-text"><strong>Verify Meta Pixel + Conversions API</strong> <span>Check Events Manager. Nothing works without tracking.</span></div>
-                </div>
-                <div style="padding: 16px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">2</div>
-                    <div class="funnel-text"><strong>Build retargeting audiences</strong> <span>Website visitors (180d), video viewers (365d), IG/FB engagers. Start collecting now.</span></div>
-                </div>
-                <div style="padding: 16px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">3</div>
-                    <div class="funnel-text"><strong>Create 3-day free pass landing page</strong> <span>Stop sending ad traffic to homepage. One page, one offer, one CTA.</span></div>
-                </div>
-                <div style="padding: 16px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">4</div>
-                    <div class="funnel-text"><strong>Film 3 UGC Reels</strong> <span>Price shock tour, member testimonial, She's FIT showcase. iPhone is fine.</span></div>
-                </div>
-                <div style="padding: 16px 0; border-bottom: 1px solid var(--border); display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">5</div>
-                    <div class="funnel-text"><strong>Launch Campaign 1 (Prospecting)</strong> <span>3-day free pass, broad local targeting, 3 creatives, $50-65/day.</span></div>
-                </div>
-                <div style="padding: 16px 0; display:flex; gap:20px; align-items:center;">
-                    <div class="funnel-num">6</div>
-                    <div class="funnel-text"><strong>Push $10/month promo urgency</strong> <span>March 31 deadline = built-in urgency. Countdown creative on retargeting.</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 16: Summary -->
-        <div class="slide" data-slide="15">
-            <div class="slide-label">Summary</div>
-            <h1>The play is simple</h1>
-            <div style="margin-top:24px; font-size:18px; line-height:2;">
-                <p><span class="highlight" style="font-weight:700;">1.</span> Install tracking (Pixel + CAPI)</p>
-                <p><span class="highlight" style="font-weight:700;">2.</span> Build dedicated landing pages (free pass + $10/mo promo)</p>
-                <p><span class="highlight" style="font-weight:700;">3.</span> Create UGC content (3-5 Reels, iPhone quality is fine)</p>
-                <p><span class="highlight" style="font-weight:700;">4.</span> Launch 3 campaigns (Prospecting 60% / Retargeting 25% / Geo-Conquest 15%)</p>
-                <p><span class="highlight" style="font-weight:700;">5.</span> Lead with the free pass on cold traffic</p>
-                <p><span class="highlight" style="font-weight:700;">6.</span> Push urgency on warm traffic ($10/mo expires 3/31)</p>
-                <p><span class="highlight" style="font-weight:700;">7.</span> Test 4 locations first, then scale to 17</p>
-                <p><span class="highlight" style="font-weight:700;">8.</span> Track cost per new member, not just cost per lead</p>
-                <p><span class="highlight" style="font-weight:700;">9.</span> Build email nurture to maximize retention and LTV</p>
-            </div>
-            <p style="margin-top:32px; font-size:16px; color:var(--text-muted);">The price advantage does the heavy lifting. The ads just need to get the price in front of the right people at the right time.</p>
-        </div>
-
     </div>
+</div>
 
-    <div class="nav">
-        <button class="nav-btn" onclick="prevSlide()">&#8592;</button>
-        <span class="slide-count" id="slideCount">1 / 16</span>
-        <button class="nav-btn" onclick="nextSlide()">&#8594;</button>
+<!-- S35: SECTION DIVIDER - BUDGET -->
+<div class="slide section-divider">
+    <div class="section-num">06</div>
+    <div class="slide-label" style="margin-top:12px;">Section Six</div>
+    <h1>Budget, KPIs<br><span class="highlight">& Rollout</span></h1>
+    <p class="subtitle" style="margin-top:12px;">The numbers, targets, location strategy, and your 30-60-90 day roadmap.</p>
+</div>
+
+<!-- S36: INDUSTRY BENCHMARKS -->
+<div class="slide">
+    <div class="slide-label">Budget & KPIs</div>
+    <h2>Industry benchmarks: Fitness on Meta</h2>
+    <div class="card-grid grid-4" style="margin-top:24px;">
+        <div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--text);">$52.98</div><div class="stat-label">Average CPL (Fitness)</div></div>
+        <div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--accent);">14.29%</div><div class="stat-label">Conversion Rate (Highest of any industry)</div></div>
+        <div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--blue);">76%</div><div class="stat-label">Retargeting CTR Advantage</div></div>
+        <div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:900;color:var(--orange);">+20%</div><div class="stat-label">CPM Increase YoY</div></div>
     </div>
+    <div class="card card-accent" style="margin-top:20px;">
+        <h3>What this means for Club 16</h3>
+        <p>Fitness has the highest lead-to-customer conversion rate of any industry. Combined with Club 16's ultra-low pricing (removes the biggest objection), you should beat these benchmarks significantly. Target CPL: <strong style="color:var(--accent);">under $10</strong> for lead form submissions. Industry says $52.98 but that's for $50+/month gyms. At $4/week, your CPL should be a fraction of that.</p>
+    </div>
+</div>
 
-    <script>
-        let current = 0;
-        const slides = document.querySelectorAll('.slide');
-        const total = slides.length;
-        const progress = document.getElementById('progress');
-        const counter = document.getElementById('slideCount');
+<!-- S37: BUDGET FRAMEWORK -->
+<div class="slide">
+    <div class="slide-label">Budget & KPIs</div>
+    <h2>Starting budget and scale path</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Phase</th><th>Timeline</th><th>Monthly Spend</th><th>Daily Spend</th><th>Locations</th><th>Focus</th></tr></thead>
+            <tbody>
+                <tr><td><span class="badge badge-green">Prove</span></td><td>Weeks 1-4</td><td>$3,000</td><td>$100</td><td>5 clusters</td><td>Test 3 creatives per cluster, find winners</td></tr>
+                <tr><td><span class="badge badge-blue">Expand</span></td><td>Weeks 5-8</td><td>$7,500</td><td>$250</td><td>10 locations</td><td>Scale winners 2x, expand to more locations</td></tr>
+                <tr><td><span class="badge badge-orange">Scale</span></td><td>Week 9+</td><td>$15,000</td><td>$500</td><td>All 17</td><td>Full rollout, proven creatives, all locations</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="two-col" style="margin-top:16px;">
+        <div class="card">
+            <h3>Budget Split (Month 1)</h3>
+            <div style="margin-top:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Prospecting (60%)</span><span style="color:var(--accent);">$1,800/mo</span></div>
+                <div class="pct-bar"><div class="pct-fill" style="width:60%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px;"><span>Retargeting (25%)</span><span style="color:var(--blue);">$750/mo</span></div>
+                <div class="pct-bar"><div class="pct-fill" style="width:25%;background:var(--blue);"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:8px;"><span>Geo-Conquest (15%)</span><span style="color:var(--orange);">$450/mo</span></div>
+                <div class="pct-bar"><div class="pct-fill" style="width:15%;background:var(--orange);"></div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Scaling Rules</h3>
+            <ul>
+                <li>Increase budget 20% every 3 days (never more)</li>
+                <li>Don't touch ads for first 3 days (learning phase)</li>
+                <li>Only scale when CPL is Green for 7+ consecutive days</li>
+                <li>Duplicate winning ad sets and swap geo-targeting</li>
+                <li>Have backup creative ready before you need it</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-        function updateSlide(direction) {
-            slides[current].classList.remove('active');
-            slides[current].classList.add(direction === 'next' ? 'exit' : '');
-            setTimeout(() => slides[current - (direction === 'next' ? 1 : -1)]?.classList.remove('exit'), 500);
-            slides[current].classList.add('active');
-            progress.style.width = ((current + 1) / total * 100) + '%';
-            counter.textContent = (current + 1) + ' / ' + total;
-        }
+<!-- S38: KPIs -->
+<div class="slide">
+    <div class="slide-label">Budget & KPIs</div>
+    <h2>KPIs that actually matter</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Metric</th><th>Target</th><th>Industry Avg</th><th>Why It Matters</th></tr></thead>
+            <tbody>
+                <tr><td>Cost Per Lead</td><td><span class="highlight">&lt; $10</span></td><td>$52.98</td><td>Club 16's price removes the cost objection. CPL should be far below industry.</td></tr>
+                <tr><td>Cost Per Trial Visit</td><td><span class="highlight">&lt; $20</span></td><td>$30-50</td><td>Lead form cost + show rate. The 5-minute rule improves this dramatically.</td></tr>
+                <tr><td>Trial-to-Member Rate</td><td><span class="highlight">&gt; 40%</span></td><td>30%</td><td>This is on the staff, not the ads. Track it per location.</td></tr>
+                <tr><td>Cost Per New Member</td><td><span class="highlight">&lt; $50</span></td><td>$80-120</td><td>THE metric. Lead cost divided by conversion rate. This determines if ads are profitable.</td></tr>
+                <tr><td>Lead Response Time</td><td><span class="highlight">&lt; 5 min</span></td><td>47 hours</td><td>3-5x higher close rate when contacted within 5 minutes vs 1 hour.</td></tr>
+                <tr><td>ROAS by Location</td><td><span class="highlight">Track separately</span></td><td>Varies</td><td>Some locations will outperform. Shift budget to winners.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card card-accent" style="margin-top:16px;">
+        <h3>The LTV Math</h3>
+        <p>Member staying 12 months at $10/mo = <strong style="color:var(--accent);">$120 LTV</strong>. Acquisition cost of $50 = <strong style="color:var(--accent);">2.4x return</strong> on front end alone. Real profit is months 6-36+. A member who stays 3 years = $360+ LTV on a $50 acquisition.</p>
+    </div>
+</div>
 
-        function nextSlide() {
-            if (current >= total - 1) return;
-            slides[current].classList.remove('active');
-            slides[current].classList.add('exit');
-            current++;
-            slides[current].classList.add('active');
-            setTimeout(() => slides[current - 1].classList.remove('exit'), 500);
-            progress.style.width = ((current + 1) / total * 100) + '%';
-            counter.textContent = (current + 1) + ' / ' + total;
-        }
+<!-- S39: TRAFFIC LIGHT -->
+<div class="slide">
+    <div class="slide-label">Budget & KPIs</div>
+    <h2>Traffic light decision framework</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Check every Monday. Simple decision rules for every campaign and ad set.</p>
+    <div class="card-grid grid-3">
+        <div class="card" style="border-color:var(--accent);">
+            <h3 style="color:var(--accent);font-size:24px;">GREEN</h3>
+            <p style="margin-bottom:8px;"><strong style="color:var(--text)">CPL under $10. Leads converting to trials.</strong></p>
+            <ul>
+                <li>Keep running. Consider scaling.</li>
+                <li>Increase budget 20% every 3 days.</li>
+                <li>Duplicate to new location clusters.</li>
+                <li>Create adjacent variations of winning ads.</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color:var(--orange);">
+            <h3 style="color:var(--orange);font-size:24px;">YELLOW</h3>
+            <p style="margin-bottom:8px;"><strong style="color:var(--text)">CPL $10-20. Some leads, inconsistent.</strong></p>
+            <ul>
+                <li>Watch closely this week. Don't scale.</li>
+                <li>Don't panic. Don't make changes yet.</li>
+                <li>Check: is it the hook? The audience? The offer?</li>
+                <li>If Yellow for 7+ days, test new creative.</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color:var(--red);">
+            <h3 style="color:var(--red);font-size:24px;">RED</h3>
+            <p style="margin-bottom:8px;"><strong style="color:var(--text)">CPL above $20. Low CTR. Few leads.</strong></p>
+            <ul>
+                <li>Pause the ad set (not the campaign).</li>
+                <li>Diagnose: high CPM = creative issue.</li>
+                <li>Low CTR = hook isn't working.</li>
+                <li>Refresh creative. Test new hooks. Relaunch.</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-        function prevSlide() {
-            if (current <= 0) return;
-            slides[current].classList.remove('active');
-            current--;
-            slides[current].classList.remove('exit');
-            slides[current].classList.add('active');
-            progress.style.width = ((current + 1) / total * 100) + '%';
-            counter.textContent = (current + 1) + ' / ' + total;
-        }
+<!-- S40: IF-THEN DIAGNOSTICS -->
+<div class="slide">
+    <div class="slide-label">Budget & KPIs</div>
+    <h2>IF-THEN diagnostics</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">When something's wrong, don't panic. Use this framework to identify and fix the issue.</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+            <tbody>
+                <tr><td>High CPMs</td><td>Creative quality or audience too narrow</td><td>Broaden targeting. Refresh creative. Check ad quality score.</td></tr>
+                <tr><td>Low CTR (&lt;1%)</td><td>Hooks aren't stopping the scroll</td><td>Test new hooks from the swipe file. Try stalker hooks. Change opening 3 seconds.</td></tr>
+                <tr><td>High CTR, low conversions</td><td>Landing page or lead form issue</td><td>Simplify the form. Reduce questions. Check page load speed on mobile.</td></tr>
+                <tr><td>Getting leads, no show-ups</td><td>Speed-to-lead problem</td><td>Get response time under 5 minutes. Add selfie video from trainer. Add SMS reminders.</td></tr>
+                <tr><td>High CPL</td><td>Creative fatigue or wrong audience</td><td>Check frequency (if &gt;3, creative is tired). Refresh ads. Check audience overlap.</td></tr>
+                <tr><td>Show-ups but no conversions</td><td>In-gym sales process issue</td><td>Train staff on membership pitch. Ensure tour covers all amenities. Offer day-of signup bonus.</td></tr>
+                <tr><td>Good results, can't scale</td><td>Audience too small or creative fatigue at scale</td><td>Broaden targeting. Add more creative diversity. Increase audience windows.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
-        });
+<!-- S41: LOCATION CLUSTERS -->
+<div class="slide">
+    <div class="slide-label">Location Strategy</div>
+    <h2>5 location clusters to start</h2>
+    <div class="card-grid grid-5">
+        <div class="card card-accent">
+            <h3>Cluster 1</h3>
+            <p><strong style="color:var(--text)">Vancouver / Metro</strong></p>
+            <ul><li>Downtown Vancouver</li><li>Brentwood</li><li>North Vancouver</li></ul>
+            <p style="margin-top:6px;"><span class="badge badge-green">Highest density</span></p>
+        </div>
+        <div class="card">
+            <h3>Cluster 2</h3>
+            <p><strong style="color:var(--text)">Surrey (She's FIT)</strong></p>
+            <ul><li>Surrey Fleetwood</li><li>Surrey Central</li><li>Surrey Newton</li><li>South Surrey</li></ul>
+            <p style="margin-top:6px;"><span class="badge badge-purple">Women-only</span></p>
+        </div>
+        <div class="card">
+            <h3>Cluster 3</h3>
+            <p><strong style="color:var(--text)">Burnaby / Delta</strong></p>
+            <ul><li>South Burnaby</li><li>Metrotown (She's FIT)</li><li>North Delta (She's FIT)</li></ul>
+            <p style="margin-top:6px;"><span class="badge badge-blue">Mixed</span></p>
+        </div>
+        <div class="card">
+            <h3>Cluster 4</h3>
+            <p><strong style="color:var(--text)">Tri-Cities / East</strong></p>
+            <ul><li>Coquitlam</li><li>Maple Ridge</li></ul>
+            <p style="margin-top:6px;"><span class="badge badge-orange">Suburban growth</span></p>
+        </div>
+        <div class="card">
+            <h3>Cluster 5</h3>
+            <p><strong style="color:var(--text)">Fraser Valley</strong></p>
+            <ul><li>Langley</li><li>Abbotsford</li><li>Chilliwack</li><li>Tsawwassen/Ladner</li><li>Richmond</li></ul>
+            <p style="margin-top:6px;"><span class="badge badge-orange">Wider radius</span></p>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top:12px;">$20/day per cluster = $100/day total. Prove the model. Then expand winning clusters. Duplicate ads, swap geo-targeting.</p>
+</div>
 
-        // Touch support
-        let touchStartX = 0;
-        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
-        document.addEventListener('touchend', (e) => {
-            const diff = touchStartX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
-        });
+<!-- S42: GEO-TARGETING RULES -->
+<div class="slide">
+    <div class="slide-label">Location Strategy</div>
+    <h2>Geo-targeting radius by area type</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Location Type</th><th>Radius</th><th>Locations</th><th>Rationale</th></tr></thead>
+            <tbody>
+                <tr><td>Urban / Dense</td><td>5km</td><td>Downtown Vancouver, Brentwood, Metrotown</td><td>High density. People won't drive far. Transit accessible.</td></tr>
+                <tr><td>Suburban</td><td>8-10km</td><td>Coquitlam, Langley, North Vancouver, Burnaby</td><td>Car-dependent. People drive 10-15 min to gym.</td></tr>
+                <tr><td>Exurban / Spread Out</td><td>10-15km</td><td>Chilliwack, Abbotsford, Maple Ridge, Tsawwassen</td><td>Lower density. Fewer gym options. People drive further.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="quote" style="margin-top:20px;">"Every dollar spent on someone outside driving distance of a location is wasted. Geo-targeting is the foundation of everything."</div>
+    <div class="card" style="margin-top:16px;">
+        <h3>Pro Tip: Budget Weight by Density</h3>
+        <p>Downtown Vancouver and Brentwood should get more budget per location than Chilliwack. More people in radius = more potential leads per dollar. Weight budget proportionally to population density within each cluster.</p>
+    </div>
+</div>
 
-        // Init
-        progress.style.width = (1 / total * 100) + '%';
-    </script>
+<!-- S43: LOWER-TICKET TACTICS -->
+<div class="slide">
+    <div class="slide-label">Lower-Ticket Playbook</div>
+    <h2>At $4/week, the strategy is fundamentally different</h2>
+    <div class="card-grid grid-2">
+        <div class="card card-accent">
+            <h3>Volume Over Qualification</h3>
+            <p>Cast a wide net. The price removes the biggest objection. Don't over-target. Don't use complex interest stacks. Let the algorithm find the buyers. At $4/week, almost everyone is a potential customer.</p>
+        </div>
+        <div class="card">
+            <h3>Speed to Conversion</h3>
+            <p>Short funnels. Maximum 3 form fields. Mobile-first everything. Free pass signup should take under 30 seconds. Every extra step loses 20-30% of people.</p>
+        </div>
+        <div class="card">
+            <h3>Impulse-Friendly Framing</h3>
+            <p>"Less than a coffee a day." "$4/week. That's it." "Your gym membership costs less than your Netflix." Reframe the price into something that feels like nothing.</p>
+        </div>
+        <div class="card">
+            <h3>Social Proof at Scale</h3>
+            <p>"17 locations. Thousands of members. $4/week." At this price point, volume numbers impress. Member count, location count, class count, years in business.</p>
+        </div>
+    </div>
+    <div class="card" style="margin-top:12px;border-color:var(--accent);">
+        <h3>The Retention Truth</h3>
+        <p>Ads get them in the door. The experience keeps them paying. At $4/week, churn is the real enemy. A member who stays 3 years = $360+ LTV. A member who quits after 1 month = $16 LTV. The post-signup experience is where the profit lives.</p>
+    </div>
+</div>
+
+<!-- S44: POST-SIGNUP NURTURE -->
+<div class="slide">
+    <div class="slide-label">Retention</div>
+    <h2>Post-signup email nurture sequence</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">The most vulnerable moment is the 60 seconds after purchase. Buyer's remorse sets in. This sequence combats it.</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Timing</th><th>Email</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td>Immediate</td><td>Welcome + Confirmation Page</td><td>Rebuild confidence. Show them they made the right choice. Link to strategic confirmation page.</td></tr>
+                <tr><td>Day 1</td><td>What to Expect on Your First Visit</td><td>Reduce anxiety. Tell them where to go, what to bring, who to ask for. Remove unknowns.</td></tr>
+                <tr><td>Day 3</td><td>"How Was Your First Visit?"</td><td>Check in. Make them feel seen. If they haven't visited, this is a nudge.</td></tr>
+                <tr><td>Day 7</td><td>Group Class Recommendation</td><td>Drive deeper engagement. Class members retain longer than solo gym-goers.</td></tr>
+                <tr><td>Day 14</td><td>Personal Training Intro Offer</td><td>Upsell opportunity. "Book a free 30-min PT session." Increases engagement and LTV.</td></tr>
+                <tr><td>Day 30</td><td>"You've Been a Member for a Month!"</td><td>Celebrate the milestone. Share their check-in stats if available. Reinforce the habit.</td></tr>
+                <tr><td>Day 30+ (no visits)</td><td>"We Miss You" Win-Back</td><td>Re-engage inactive members before they cancel. Low-pressure, non-judgmental.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- S45: 7-DAY LAUNCH PLAN -->
+<div class="slide">
+    <div class="slide-label">Execution</div>
+    <h2>The 7-day launch plan</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Day</th><th>Action</th><th>Who</th></tr></thead>
+            <tbody>
+                <tr><td><span class="badge badge-green">Day 1</span></td><td>Verify Pixel + CAPI. Build retargeting audiences. Confirm lead form setup.</td><td>Agency / Internal</td></tr>
+                <tr><td><span class="badge badge-green">Day 2</span></td><td>Write ad scripts using hook templates. Plan filming locations. Prepare equipment.</td><td>Marketing team</td></tr>
+                <tr><td><span class="badge badge-blue">Day 3</span></td><td>Filming day. 6-hour block. 20-25 video ads + B-roll. Start with 60-second test.</td><td>Team + talent</td></tr>
+                <tr><td><span class="badge badge-blue">Day 4</span></td><td>Edit videos. Add captions. Create static ad briefs for designer. Build landing pages.</td><td>Editor / Designer</td></tr>
+                <tr><td><span class="badge badge-orange">Day 5</span></td><td>Upload all creative to Ads Manager. Set up 5 ad sets (1 per cluster). Configure lead forms.</td><td>Ads manager</td></tr>
+                <tr><td><span class="badge badge-orange">Day 6</span></td><td>Final review. Check all targeting, budgets, tracking. Confirm lead notification routing to staff.</td><td>Agency / Internal</td></tr>
+                <tr><td><span class="badge badge-green">Day 7</span></td><td>LAUNCH. Then hands off for 3 days. Let the algorithm learn. Do NOT make changes.</td><td>Everyone</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- S46: THIS WEEK'S ACTION ITEMS -->
+<div class="slide">
+    <div class="slide-label">This Week</div>
+    <h2>6 action items, priority order</h2>
+    <div style="margin-top:20px;">
+        <div class="num-item"><div class="num-circle">1</div><div class="num-content"><h3>Verify Meta Pixel + Conversions API</h3><p>Check Events Manager. Ask agency: "Is our pixel installed? Is CAPI configured?" Nothing works without tracking.</p></div></div>
+        <div class="num-item"><div class="num-circle">2</div><div class="num-content"><h3>Build retargeting audiences in Ads Manager</h3><p>Website visitors (180d), video viewers (365d), IG engagers, FB engagers, lead form openers. Start collecting data NOW.</p></div></div>
+        <div class="num-item"><div class="num-circle">3</div><div class="num-content"><h3>Create 3-day free pass landing page or lead form</h3><p>Stop sending ad traffic to the homepage. One page, one offer, one CTA. Mobile-first. Under 30 seconds to complete.</p></div></div>
+        <div class="num-item"><div class="num-circle">4</div><div class="num-content"><h3>Film 3-5 UGC-style Reels</h3><p>Price shock tour, facility walkthrough, member testimonial, She's FIT showcase. iPhone + lapel mic. 30-45 seconds each.</p></div></div>
+        <div class="num-item"><div class="num-circle">5</div><div class="num-content"><h3>Launch Campaign 1 (Prospecting) at 5 clusters</h3><p>$20/day per cluster. 3-day free pass offer. Broad local targeting. 20-25 creatives loaded. Don't touch for 3 days.</p></div></div>
+        <div class="num-item"><div class="num-circle">6</div><div class="num-content"><h3>Push $10/month promo on retargeting</h3><p>March 31 deadline = built-in urgency. Countdown static creative. Update weekly (26 days, 19, 12, 5, LAST DAY).</p></div></div>
+    </div>
+</div>
+
+<!-- S47: 30-60-90 ROADMAP -->
+<div class="slide">
+    <div class="slide-label">Roadmap</div>
+    <h2>30-60-90 day roadmap</h2>
+    <div class="card-grid grid-3">
+        <div class="card card-accent">
+            <h3 style="font-size:32px;margin-bottom:4px;">30</h3>
+            <p><strong style="color:var(--text)">Days: Prove the Model</strong></p>
+            <ul>
+                <li>Launch at 5 clusters, $100/day</li>
+                <li>Test 20-25 creatives</li>
+                <li>Establish baseline CPL</li>
+                <li>Optimize lead follow-up process</li>
+                <li>Push $10/mo promo (March 31 deadline)</li>
+                <li>First creative refresh at day 14</li>
+                <li>Weekly performance review (traffic light)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3 style="font-size:32px;margin-bottom:4px;">60</h3>
+            <p><strong style="color:var(--text)">Days: Expand & Optimize</strong></p>
+            <ul>
+                <li>Scale to 10 locations at $250/day</li>
+                <li>Scale winning ads 2x</li>
+                <li>Kill underperformers</li>
+                <li>Second filming day (new content)</li>
+                <li>Launch She's FIT campaign separately</li>
+                <li>Build content remarketing library</li>
+                <li>Activate geo-conquest campaign</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3 style="font-size:32px;margin-bottom:4px;">90</h3>
+            <p><strong style="color:var(--text)">Days: Full Scale</strong></p>
+            <ul>
+                <li>All 17 locations at $500/day</li>
+                <li>Proven creative playbook</li>
+                <li>Location-specific content for top performers</li>
+                <li>Email nurture fully automated</li>
+                <li>Monthly filming days scheduled</li>
+                <li>Seasonal creative calendar active</li>
+                <li>Consider CBO optimization</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- S48: SEASONAL CALENDAR -->
+<div class="slide">
+    <div class="slide-label">Roadmap</div>
+    <h2>Seasonal creative calendar</h2>
+    <div class="card-grid grid-4">
+        <div class="card card-accent">
+            <h3>Spring (Now - May)</h3>
+            <p><strong style="color:var(--text)">Sun Run Prep + Fresh Start</strong></p>
+            <ul>
+                <li>"Get ready for Sun Run"</li>
+                <li>Outdoor energy messaging</li>
+                <li>$10/mo promo push (March)</li>
+                <li>Spring cleaning = body refresh</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Summer (June - Aug)</h3>
+            <p><strong style="color:var(--text)">Lifestyle + Feel Good</strong></p>
+            <ul>
+                <li>Summer body confidence</li>
+                <li>Community event highlights</li>
+                <li>"Stay cool, train indoors"</li>
+                <li>Lower competition (gyms pull back)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Fall (Sept - Nov)</h3>
+            <p><strong style="color:var(--text)">Back to Routine</strong></p>
+            <ul>
+                <li>"Summer's over, time to commit"</li>
+                <li>Consistency messaging</li>
+                <li>Back-to-school energy</li>
+                <li>Group class push</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Winter (Dec - Feb)</h3>
+            <p><strong style="color:var(--text)">New Year's Resolution</strong></p>
+            <ul>
+                <li>Resolution hooks (highest intent)</li>
+                <li>"Fresh start, no commitment"</li>
+                <li>January is your biggest month</li>
+                <li>Have creative ready by Dec 15</li>
+            </ul>
+        </div>
+    </div>
+    <p class="small-text" style="margin-top:12px;">Have seasonal ads ready 2 weeks before each period starts. Build a creative bank so you're never scrambling.</p>
+</div>
+
+<!-- S49: SUMMARY -->
+<div class="slide">
+    <div class="slide-label">Summary</div>
+    <h1>The play</h1>
+    <div style="margin-top:20px;font-size:17px;line-height:2;">
+        <p><span class="highlight" style="font-weight:700;">1.</span> Install tracking (Pixel + CAPI)</p>
+        <p><span class="highlight" style="font-weight:700;">2.</span> Build retargeting audiences (start collecting data now)</p>
+        <p><span class="highlight" style="font-weight:700;">3.</span> Create dedicated landing pages (free pass + $10/mo promo)</p>
+        <p><span class="highlight" style="font-weight:700;">4.</span> Film UGC content (one filming day = 20-25 ads)</p>
+        <p><span class="highlight" style="font-weight:700;">5.</span> Launch 3 campaigns (Prospecting 60% / Retargeting 25% / Geo-Conquest 15%)</p>
+        <p><span class="highlight" style="font-weight:700;">6.</span> Lead with the free pass on cold traffic</p>
+        <p><span class="highlight" style="font-weight:700;">7.</span> Push $10/mo urgency on warm traffic (26 days left)</p>
+        <p><span class="highlight" style="font-weight:700;">8.</span> Test at 5 clusters, then scale to all 17</p>
+        <p><span class="highlight" style="font-weight:700;">9.</span> Track cost per new member, not just cost per lead</p>
+        <p><span class="highlight" style="font-weight:700;">10.</span> Build email nurture to maximize retention and LTV</p>
+    </div>
+    <p style="margin-top:24px;font-size:15px;color:var(--text-muted);">The price advantage does the heavy lifting. The ads just need to get the price in front of the right people at the right time.</p>
+</div>
+
+<!-- S50: CLOSING -->
+<div class="slide section-divider">
+    <div class="slide-label">Next Steps</div>
+    <h1>Questions?</h1>
+    <p class="subtitle" style="margin-top:16px;">We'll review progress on our next call. Start with Action Item #1 (Pixel + CAPI verification) this week.</p>
+    <div style="margin-top:32px;">
+        <span class="tag tag-green">17 Locations</span>
+        <span class="tag tag-green">$4/Week</span>
+        <span class="tag tag-blue">3 Campaigns</span>
+        <span class="tag tag-blue">5 Clusters</span>
+        <span class="tag tag-orange">$100/Day Start</span>
+        <span class="tag tag-orange">March 31 Deadline</span>
+    </div>
+</div>
+
+</div>
+
+<div class="nav">
+    <button class="nav-btn" onclick="prevSlide()">&#8592;</button>
+    <span class="slide-count" id="slideCount">1 / 50</span>
+    <button class="nav-btn" onclick="nextSlide()">&#8594;</button>
+</div>
+
+<script>
+let current=0;const slides=document.querySelectorAll('.slide'),total=slides.length,progress=document.getElementById('progress'),counter=document.getElementById('slideCount');
+function nextSlide(){if(current>=total-1)return;slides[current].classList.remove('active');slides[current].classList.add('exit');current++;slides[current].classList.add('active');setTimeout(()=>slides[current-1].classList.remove('exit'),500);progress.style.width=((current+1)/total*100)+'%';counter.textContent=(current+1)+' / '+total}
+function prevSlide(){if(current<=0)return;slides[current].classList.remove('active');current--;slides[current].classList.remove('exit');slides[current].classList.add('active');progress.style.width=((current+1)/total*100)+'%';counter.textContent=(current+1)+' / '+total}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextSlide()}if(e.key==='ArrowLeft'){e.preventDefault();prevSlide()}});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50){d>0?nextSlide():prevSlide()}});
+progress.style.width=(1/total*100)+'%';counter.textContent='1 / '+total;
+</script>
 </body>
 </html>
